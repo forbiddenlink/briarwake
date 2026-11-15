@@ -1,8 +1,8 @@
-# Copilot Instructions for Apeiron Remake
+# Copilot Instructions for Briarwake Remake
 
 ## Project Overview
 
-- **Apeiron Remake** is an exact-feel, deterministic clone of Ambrosia's classic Mac game _Apeiron_ (Centipede-style), built with React + TypeScript and rendered on a single HTML5 Canvas. All visuals and audio are generated procedurally in code, no external assets or public folder.
+- **Briarwake Remake** is an original, deterministic arcade shooter, built with React + TypeScript and rendered on a single HTML5 Canvas. All visuals and audio are generated procedurally in code, no external assets or public folder.
 - The authoritative contract is `ARCHITECTURE.md` (design invariants, subsystem ownership, frozen: code wins on disagreement). See also `README.md` for setup and `tools/README.md` for the reproducibility/profiling harness.
 
 ## Architecture & Patterns
@@ -10,8 +10,8 @@
 - **Deterministic Engine:** `src/game/Engine.ts` implements a fixed-timestep accumulator loop (60Hz), grid-quantized logic, and manages all entity updates, spawns, collisions, and HUD rendering.
 - **Entities:** Player, centipede, spider, flea, scorpion, and mushrooms are implemented as classes in `src/game/`. They interact via the engine and a grid (`Grid.ts`).
 - **Procedural Art & SFX:** All sprites (`src/game/ProceduralSprites.ts`) and sound (`src/game/AudioSynth.ts`) are generated at runtime. No image/audio files are used or allowed.
-- **Single Canvas:** The game is rendered to a single `<canvas>` via `ApeironCanvas.tsx`.
-- **Minimal React state for gameplay:** gameplay state lives entirely in the engine, not React - `ApeironCanvas.tsx` only mounts and bridges to it. UI-only components (`Menu.tsx`, `Options.tsx`, `ConfigTuner.tsx`) do use `useState`/`useEffect` for their own local UI state.
+- **Single Canvas:** The game is rendered to a single `<canvas>` via `BriarwakeCanvas.tsx`.
+- **Minimal React state for gameplay:** gameplay state lives entirely in the engine, not React - `BriarwakeCanvas.tsx` only mounts and bridges to it. UI-only components (`Menu.tsx`, `Options.tsx`, `ConfigTuner.tsx`) do use `useState`/`useEffect` for their own local UI state.
 
 ## Developer Workflows
 
@@ -33,7 +33,7 @@
 - `src/game/Engine.ts` — main game loop, entity management, collisions, HUD
 - `src/game/ProceduralSprites.ts` — all drawing routines (crisp, minimalist)
 - `src/game/AudioSynth.ts` — sound effect synthesis (WebAudio)
-- `src/components/ApeironCanvas.tsx` — React bridge to the engine
+- `src/components/BriarwakeCanvas.tsx` — React bridge to the engine
 - `src/game/Constants.ts` — all gameplay constants
 - `vite.config.ts` — Vite config, strict port
 

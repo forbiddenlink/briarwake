@@ -4,7 +4,7 @@ import { GRID, PLAYER, POWERUPS, XQJ37_BLASTER } from './GameConfig'
 import type { Rect } from './Types'
 
 export type PowerUpType = (typeof POWERUPS.TYPES)[number]
-export type YummyType = PowerUpType
+export type BloomType = PowerUpType
 
 const POWERUP_DURATIONS: Record<PowerUpType, number> = {
   guided: POWERUPS.GUIDED_SHOT_DURATION,
@@ -223,7 +223,7 @@ export class Player {
     sfx.extra()
   }
 
-  addYummy(type: PowerUpType) {
+  addBloom(type: PowerUpType) {
     this.addPowerUp(type)
   }
 
@@ -232,7 +232,7 @@ export class Player {
     return typeof t === 'number' && t > 0
   }
 
-  hasYummy(type: PowerUpType): boolean {
+  hasBloom(type: PowerUpType): boolean {
     return this.hasPowerUp(type)
   }
 

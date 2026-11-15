@@ -108,15 +108,15 @@ export function Options({ settings, onChange, onClose }: OptionsProps) {
       <SectionTitle>GAME</SectionTitle>
       <Toggle
         label="Style and rules"
-        hint="Apeiron: classic rules. Apeiron X: combos, coin frenzies, faster enemies."
+        hint="Classic: plain rules. Enhanced: combos, coin frenzies, faster enemies."
         value={settings.gameMode === 'classic'}
         onChange={(v) => set('gameMode', v ? 'classic' : 'enhanced')}
-        onText="APEIRON"
-        offText="APEIRON X"
+        onText="BRIARWAKE"
+        offText="BRIARWAKE X"
       />
       <Toggle
         label="Reflecting mushrooms"
-        hint="Late waves. They bounce your shot back at you, as in the original."
+        hint="Late waves. They bounce your shot back at you, as a design choice."
         value={settings.reflectingMushrooms}
         onChange={(v) => set('reflectingMushrooms', v)}
       />

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { POWERUPS } from '../src/game/Constants'
 import { getBonusMultiplierAward, MAX_BONUS_SCORE } from '../src/game/Engine'
 
-describe('Multiplier Yummy', () => {
+describe('Multiplier Bloom', () => {
   it('adds enough score to multiply the tracked Bonus total', () => {
     const bonus = 640
     const award = getBonusMultiplierAward(bonus)

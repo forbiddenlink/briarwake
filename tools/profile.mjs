@@ -35,11 +35,11 @@ async function main() {
     await startRun(h.page)
     // Let the real rAF loop present targetFrames, then read the recorded deltas.
     await h.page.waitForFunction(
-      (n) => (window.__apeironFrameTimes?.length ?? 0) >= n,
+      (n) => (window.__briarwakeFrameTimes?.length ?? 0) >= n,
       targetFrames,
       { timeout: 120000, polling: 100 }
     )
-    const raw = await h.page.evaluate(() => window.__apeironFrameTimes.slice())
+    const raw = await h.page.evaluate(() => window.__briarwakeFrameTimes.slice())
     const state = await readState(h.page)
 
     // Drop warmup frames (boot / lazy-compile spikes) so steady-state shows

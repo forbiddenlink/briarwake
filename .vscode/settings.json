@@ -11,7 +11,7 @@
   },
   "github.copilot.conversation": {
     "context": {
-      "description": "This is a remake of the classic 1994 Ambrosia Software game 'Apeiron', a Centipede-style arcade game. The goal is to exactly match the original game's mechanics, visuals, and feel.",
+      "description": "Briarwake is an original arcade shooter. Keep the engine deterministic and all art and sound procedural.",
       "architecture": {
         "engine": "Custom game engine using HTML5 Canvas",
         "framework": "React + TypeScript",
@@ -26,10 +26,10 @@
           "movement": "Grid-quantized with momentum"
         },
         "enemies": {
-          "pentipede": "Crystal-structured segmented enemy (main)",
-          "groucho": "Crystal flea that drops mushrooms",
-          "larry": "Crystal spider with chase behavior",
-          "gordon": "Crystal scorpion that poisons mushrooms",
+          "thornworm": "Crystal-structured segmented enemy (main)",
+          "mizzle": "Crystal flea that drops mushrooms",
+          "orrin": "Crystal spider with chase behavior",
+          "tamsin": "Crystal scorpion that poisons mushrooms",
           "ufo": "Destroys mushrooms in its path"
         },
         "powerups": {

@@ -14,13 +14,13 @@ export const SCORE = {
   SEGMENT: 10,
   HEAD: 100,
   FLEA: 200,
-  // Larry the Scobster. The 1995 FAQ lists him as "Scorpion 1500": the max,
-  // earned at close range. It gives no lower tiers; these keep Centipede's
+  // Orrin the Weaver. The reference FAQ lists him as "Scorpion 1500": the max,
+  // earned at close range. It gives no lower tiers; these keep the classic
   // 3:2:1 spider ratio as remake calibration.
-  SCOBSTER_NEAR: 1500,
-  SCOBSTER_MED: 1000,
-  SCOBSTER_FAR: 500,
-  GECKO: 1000,
+  WEAVER_NEAR: 1500,
+  WEAVER_MED: 1000,
+  WEAVER_FAR: 500,
+  SKITTER: 1000,
   MUSHROOM_HIT: 1,
   POISON_MUSHROOM_HIT: 5,
   SPACESHIP_MIN: 500,
@@ -78,11 +78,11 @@ export const SCORING = {
   },
 } as const
 
-export const EXTRA_LIFE_STEP = 20000 // classic Apeiron FAQ: every 20k
+export const EXTRA_LIFE_STEP = 20000 // classic Briarwake FAQ: every 20k
 
 // base speeds (cells/sec or px/sec)
 export const SPEED = {
-  // Slower than a straight GRID_RATIO scale: with fewer rows the Pentipede would
+  // Slower than a straight GRID_RATIO scale: with fewer rows the Thornworm would
   // otherwise reach the bottom much sooner than before.
   CENTIPEDE_CELLS_PER_SEC: 4.6,
   BULLET_PX_PER_SEC: 640 * GRID_RATIO,
@@ -93,7 +93,7 @@ export const SPEED = {
   SPIDER_PX_PER_SEC_X: 130 * GRID_RATIO,
   SPIDER_PX_PER_SEC_Y: 95 * GRID_RATIO,
   FLEA_PX_PER_SEC_Y: 220 * GRID_RATIO,
-  GECKO_PX_PER_SEC_X: 140 * GRID_RATIO,
+  SKITTER_PX_PER_SEC_X: 140 * GRID_RATIO,
 } as const
 
 export const TIMERS = {
@@ -103,8 +103,8 @@ export const TIMERS = {
   SPAWN_SPIDER_MIN: 5.0, // Give players more time before first spider
   SPAWN_SPIDER_MAX: 10.0,
   SPAWN_FLEA_COOLDOWN: 2.0,
-  SPAWN_GECKO_MIN: 6.0,
-  SPAWN_GECKO_MAX: 12.0,
+  SPAWN_SKITTER_MIN: 6.0,
+  SPAWN_SKITTER_MAX: 12.0,
   COIN_SPAWN_MIN: 10.0,
   COIN_SPAWN_MAX: 20.0,
   PSYCHEDELIC_DURATION: 4.0, // Duration of psychedelic effect
@@ -114,7 +114,7 @@ export const TIMERS = {
 // Reflected bullet settings (high difficulty waves)
 export const REFLECTED_BULLET = {
   SPEED_MULTIPLIER: 2.0, // Enhanced: reflected bullets move 2x faster
-  // Classic: reviews of the 1995 game say the shot comes back at its own speed.
+  // Classic: reviews of the reference game say the shot comes back at its own speed.
   CLASSIC_SPEED_MULTIPLIER: 1.0,
   START_WAVE: 15, // First wave with reflective mushrooms (remake calibration)
   CHANCE_PER_WAVE: 0.015, // Additional chance per wave after START_WAVE
@@ -123,7 +123,7 @@ export const REFLECTED_BULLET = {
 
 // Psychedelic mushroom settings
 // Classic Bonus: a per-wave countdown banked into Score when the wave is
-// cleared. Read off original 1995 footage (youtube.com/watch?v=irQzOwsLlok):
+// cleared. Read off reference footage (youtube.com/watch?v=irQzOwsLlok):
 // ~1960 at 0:01.6 of wave 1 and 1970 just after wave 2 starts, falling in
 // steps of 10 at roughly 25-30 points per second. STEP_SECONDS is the
 // calibrated rate; the start value and step are read directly off the sidebar.
@@ -136,7 +136,7 @@ export const CLASSIC_BONUS = {
 export const PSYCHEDELIC = {
   // Spawn rate and first wave are remake calibration, not documented facts.
   SPAWN_CHANCE: 0.02,
-  // Apeiron's guide describes the magic mushroom as making everything worth
+  // Briarwake's guide describes the magic mushroom as making everything worth
   // ten times as much. This is not an Enhanced-only mechanic.
   POINT_MULTIPLIER: 10,
   START_WAVE: 3,
@@ -163,7 +163,7 @@ export const VISUAL = {
 } as const
 
 export const POWERUPS = {
-  // Classic Apeiron Yummies (manual names)
+  // Classic Briarwake Yummies (manual names)
   MACHINE_GUN_DURATION: 10.0,
   GUIDED_SHOT_DURATION: 12.0,
   DIAMOND_DURATION: 10.0, // pass through mushrooms
@@ -172,7 +172,7 @@ export const POWERUPS = {
   HOUSE_CLEANING_DURATION: 0.0, // instant effect
   EXTRA_MAN_DURATION: 0.0, // instant effect
   // The FAQ says the Multiplier "will multiply your bonus score" without a
-  // factor. Original 1995 footage shows 3x on three separate pickups
+  // factor. Reference footage shows 3x on three separate pickups
   // (youtube.com/watch?v=irQzOwsLlok: 1250->3750, 1410->4230, 1450->4350;
   // the first checked frame by frame).
   BONUS_MULTIPLIER: 3,
@@ -185,7 +185,7 @@ export const POWERUPS = {
 
   // Spawn settings ("Yummies")
   SPAWN_CHANCE: 0.2, // Enhanced only: 20% chance for enemies to drop Yummies
-  // Reviews of the 1995 game say Yummy coins drop when a mushroom is destroyed.
+  // Reviews of the reference game say Bloom coins drop when a mushroom is destroyed.
   // The rate is remake calibration, not a documented value.
   MUSHROOM_DROP_CHANCE: 0.08,
   MAX_ACTIVE: 2, // Maximum number of Yummies active at once
@@ -193,7 +193,7 @@ export const POWERUPS = {
   FLOAT_AMPLITUDE: 4, // Pixels to float up/down
   FLOAT_SPEED: 2, // Float cycles per second
 
-  // Yummy types
+  // Bloom types
   TYPES: [
     'guided',
     'diamond',
@@ -250,7 +250,7 @@ export const PLAYER_MECHANICS = {
   MAX_VELOCITY: 600, // Maximum velocity from momentum
 } as const
 
-// Yummy colors for visual effects
+// Bloom colors for visual effects
 export const POWERUP_COLORS = {
   guided: '#ff1744', // Squiggly line
   diamond: '#40c4ff', // Diamond

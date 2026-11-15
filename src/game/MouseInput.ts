@@ -1,7 +1,7 @@
 import { GRID, PLAYER } from './GameConfig'
 
-// The pointer is the original's control: the crystal should be where the mouse
-// is. At the keyboard speed a flick across the field took 1.65 s to catch up;
+// The pointer is a core control: the crystal should be where the mouse
+// is. At the keyboard speed a dripper across the field took 1.65 s to catch up;
 // at four times that it takes about 0.4 s. Per tick that is 16 units, well under
 // what it would take to jump clean over a mushroom.
 export const MOUSE_FOLLOW_MULT = 4
@@ -75,7 +75,7 @@ export class MouseInput {
   }
 
   // Relative mode: the cursor is captured and hidden and the crystal follows
-  // mouse movement directly, as the 1995 game did, instead of chasing a pointer.
+  // mouse movement directly, as the reference game did, instead of chasing a pointer.
   setRelative(on: boolean) {
     this.relative = on
     if (!on) this.releaseLock()
@@ -198,7 +198,7 @@ export class MouseInput {
     this.lastPlayerY = playerY
 
     if (this.mouseMoved && this.isLocked()) {
-      // Direct follow, capped per tick so a hard flick cannot jump a mushroom.
+      // Direct follow, capped per tick so a hard dripper cannot jump a mushroom.
       const target = clampMouseTarget(this.mouseX, this.mouseY)
       const cap = PLAYER.MOVEMENT.BASE_SPEED * RELATIVE_SPEED_CAP
       const dx = target.x - playerX

@@ -3,8 +3,8 @@
 //
 //   pnpm balance            (skipped in the normal `pnpm test` run)
 //
-// The bot plays like a competent beginner: it stays low, shoots Larry when he is
-// overhead, works on the lowest Pentipede segment, and steps away from anything
+// The bot plays like a competent beginner: it stays low, shoots Orrin when he is
+// overhead, works on the lowest Thornworm segment, and steps away from anything
 // about to touch it. It does not plan ahead, so treat its results as a floor for
 // a human and use them to compare one tuning against another.
 import { describe, expect, it, vi } from 'vitest'
@@ -25,8 +25,8 @@ const LOOKAHEAD = 0.3 // seconds the bot looks ahead when judging a threat
 // biome-ignore lint/suspicious/noExplicitAny: the sim reads engine internals
 function threatsOf(engine: any): { box: Mover; kind: string }[] {
   const out: { box: Mover; kind: string }[] = []
-  for (const s of engine.spiders) out.push({ box: s, kind: 'scobster' })
-  for (const f of engine.fleas) out.push({ box: f, kind: 'flick' })
+  for (const s of engine.spiders) out.push({ box: s, kind: 'weaver' })
+  for (const f of engine.fleas) out.push({ box: f, kind: 'dripper' })
   for (const m of engine.fallingMushrooms)
     if (m.active) out.push({ box: m, kind: 'falling mushroom' })
   for (const b of engine.reflectedBullets) {
@@ -36,7 +36,7 @@ function threatsOf(engine: any): { box: Mover; kind: string }[] {
   for (const cent of engine.centipedes) {
     for (const s of cent.segments) {
       const pos = cent.segmentPixel(s)
-      out.push({ box: { x: pos.x, y: pos.y, w: 16, h: 16 }, kind: 'pentipede' })
+      out.push({ box: { x: pos.x, y: pos.y, w: 16, h: 16 }, kind: 'thornworm' })
     }
   }
   return out
@@ -52,8 +52,8 @@ function gaps(p: Box, t: Mover, dt: number): { dx: number; dy: number; side: num
   return { dx, dy, side: tx + t.w / 2 >= p.x + p.w / 2 ? 1 : -1 }
 }
 
-// A competent but not clever player: stays low, shoots Larry when he is above,
-// otherwise works on the lowest Pentipede segment, and steps away from anything
+// A competent but not clever player: stays low, shoots Orrin when he is above,
+// otherwise works on the lowest Thornworm segment, and steps away from anything
 // that is about to touch it, toward the side with more room.
 // biome-ignore lint/suspicious/noExplicitAny: the sim reads engine internals
 function steer(engine: any, fieldW: number): void {
@@ -84,7 +84,7 @@ function steer(engine: any, fieldW: number): void {
     return
   }
 
-  // Larry first when he is overhead and close: he is the main killer.
+  // Orrin first when he is overhead and close: he is the main killer.
   let target: number | null = null
   for (const s of engine.spiders) {
     if (s.y + s.h < p.y - 2) target = s.x + s.w / 2
@@ -137,7 +137,7 @@ describe.skipIf(!RUN)('Balance simulation', () => {
       const { COLS, CELL } = await import('../src/game/Constants')
       const fieldW = COLS * CELL
       const rows: { seed: number; seconds: number; wave: number; score: number }[] = []
-      const spawns = { flick: 0, scobster: 0, gecko: 0, ufo: 0, yummies: 0 }
+      const spawns = { dripper: 0, weaver: 0, skitter: 0, ufo: 0, yummies: 0 }
       const deaths: Record<string, number> = {}
       const waveSeconds: number[][] = []
       let totalSeconds = 0
@@ -174,13 +174,13 @@ describe.skipIf(!RUN)('Balance simulation', () => {
           const now = {
             f: engine.fleas.length,
             s: engine.spiders.length,
-            g: engine.geckos.length,
+            g: engine.skitters.length,
             u: engine.ufos.length,
             y: engine.powerUps.length,
           }
-          if (now.f > prev.f) spawns.flick += now.f - prev.f
-          if (now.s > prev.s) spawns.scobster += now.s - prev.s
-          if (now.g > prev.g) spawns.gecko += now.g - prev.g
+          if (now.f > prev.f) spawns.dripper += now.f - prev.f
+          if (now.s > prev.s) spawns.weaver += now.s - prev.s
+          if (now.g > prev.g) spawns.skitter += now.g - prev.g
           if (now.u > prev.u) spawns.ufo += now.u - prev.u
           if (now.y > prev.y) spawns.yummies += now.y - prev.y
           prev = now
@@ -202,8 +202,8 @@ describe.skipIf(!RUN)('Balance simulation', () => {
       console.log(
         `\n[balance ${mode}] median survival ${median(rows.map((r) => r.seconds))}s, ` +
           `median wave ${median(rows.map((r) => r.wave))}, median score ${median(rows.map((r) => r.score))}\n` +
-          `  per minute: flick ${perMinute(spawns.flick)}, scobster ${perMinute(spawns.scobster)}, ` +
-          `gecko ${perMinute(spawns.gecko)}, ship ${perMinute(spawns.ufo)}, yummies ${perMinute(spawns.yummies)}\n` +
+          `  per minute: dripper ${perMinute(spawns.dripper)}, weaver ${perMinute(spawns.weaver)}, ` +
+          `skitter ${perMinute(spawns.skitter)}, ship ${perMinute(spawns.ufo)}, yummies ${perMinute(spawns.yummies)}\n` +
           `  deaths: ${Object.entries(deaths)
             .map(([k, v]) => `${k} ${v}`)
             .join(', ')}\n` +

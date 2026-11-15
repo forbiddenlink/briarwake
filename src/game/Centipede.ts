@@ -28,7 +28,7 @@ export class Centipede {
         head: i === 0,
       })
     }
-    const base = ENEMIES.PENTIPEDE.SPEED_CELLS_PER_SEC
+    const base = ENEMIES.THORNWORM.SPEED_CELLS_PER_SEC
     // Speed increases with level, capped. Scaled with the grid like every other speed.
     this.speed = Math.min(base + level * 0.6 * GRID_RATIO, base + 4 * GRID_RATIO)
   }

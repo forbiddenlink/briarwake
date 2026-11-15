@@ -53,7 +53,7 @@ export function installFakeDom(options: { testHarness?: boolean } = {}): void {
   const g = globalThis as Record<string, unknown>
   g.window = {
     devicePixelRatio: 1,
-    __APEIRON_TEST__: options.testHarness ? true : undefined,
+    __BRIARWAKE_TEST__: options.testHarness ? true : undefined,
     addEventListener() {},
     removeEventListener() {},
     matchMedia: () => ({ matches: false }),

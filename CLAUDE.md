@@ -1,6 +1,6 @@
 # apeiron-remake
 
-A remake of the arcade game Apeiron (Centipede-style) built with React + Vite. All
+Briarwake is an original arcade shooter built with React + Vite. All
 assets are procedural: no image or audio files - sprites come from
 `ProceduralSprites`, audio from `AudioSynth`/`Music`. Deterministic fixed-timestep
 engine (`Engine.tick(dt)` at a fixed 1/60 step) so a seeded run renders bit-identical
@@ -55,7 +55,7 @@ pnpm balance          # bot simulation: survival, score and spawn rates per mode
   `Player.ts`, `Centipede.ts`, `Enemies.ts`, `UFO.ts`, `PowerUp.ts`, `RNG.ts`,
   `GameConfig.ts`/`Constants.ts`/`GameMode.ts` for tuning, `Music.ts`, `Cheats.ts`,
   `HighScores.ts`, `RunStats.ts`, `Gamepad.ts`, `SidebarRenderer.ts`)
-- `src/components/` - `ApeironCanvas.tsx` (canvas + test seam), `Menu.tsx`,
+- `src/components/` - `BriarwakeCanvas.tsx` (canvas + test seam), `Menu.tsx`,
   `Options.tsx`, `panels/` (shared `Panel`, info panels, `SpriteIcon`), `ui.ts`
 - `src/settings.ts` - settings type, defaults, load/save
 - `lib/particles.ts` - shared particle helper
@@ -73,7 +73,7 @@ pnpm balance          # bot simulation: survival, score and spawn rates per mode
 
 ## Env vars
 
-`APEIRON_URL` - overrides the target server for the `vr:*` harness scripts (defaults
+`BRIARWAKE_URL` - overrides the target server for the `vr:*` harness scripts (defaults
 to the local preview server).
 
 ## Gotchas
@@ -81,17 +81,17 @@ to the local preview server).
 - `vr:gate` (pixel diff) is a local developer tool, not CI-safe: baselines only match
   the machine that generated them. CI instead runs `typecheck` + `test` + `build` and
   a separate environment-independent playtest smoke workflow with no pixel compare.
-- The test seam (`window.__apeironEngine`) is exposed only when
-  `window.__APEIRON_TEST__` is set by the headless harness before boot; it has no
+- The test seam (`window.__briarwakeEngine`) is exposed only when
+  `window.__BRIARWAKE_TEST__` is set by the headless harness before boot; it has no
   effect on normal runs.
 - Seeds: a normal run picks a random seed (`Engine.seed`); under
-  `window.__APEIRON_TEST__` it is always `0xc0ffee`. `startNewGame(seed)` replays a
+  `window.__BRIARWAKE_TEST__` it is always `0xc0ffee`. `startNewGame(seed)` replays a
   specific field (daily challenge). Settings and scores are not read or written
   under the harness.
 - The canvas backing store is `800x592` times `Engine.setPixelRatio` (device pixel
   ratio times the fit-to-window scale). Draw code works in logical pixels. The
   harness runs at DPR 1 and scale 1, so capture sizes are unchanged.
-- Pentipede segments are drawn and hit-tested at an interpolated position
+- Thornworm segments are drawn and hit-tested at an interpolated position
   (`Centipede.segmentPixel`); grid logic still uses whole cells.
 - Grid: the field is 25 x 25 cells of 16 units (400 x 400 field units), drawn
   scaled by `Engine.fieldScale` (1.48) to fill the 592-pixel playfield. Gameplay
@@ -101,7 +101,7 @@ to the local preview server).
 - Backdrops: `render3d/BackdropBaker.ts` relights the flat theme textures as
   terrain, same async-bake-with-fallback pattern as the sprites.
 - `pnpm balance` runs a bot over 12 seeds per mode and prints survival, score and
-  spawn rates. The bot is weak (Larry kills it), so use it to compare a change
+  spawn rates. The bot is weak (Orrin kills it), so use it to compare a change
   before and after, not as an absolute difficulty measure.
 - 3D sprites: `src/game/render3d/SpriteBaker.ts` builds each character as a
   three.js model and bakes it into a 2D atlas over the first frames after boot.

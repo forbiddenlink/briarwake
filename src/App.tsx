@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ApeironCanvas } from './components/ApeironCanvas'
+import { BriarwakeCanvas } from './components/BriarwakeCanvas'
 import { Menu, type OverlayName } from './components/Menu'
 import { Options } from './components/Options'
 import {
@@ -28,7 +28,7 @@ const FRAME_H = GAME_H + TITLE_BAR_H + 3
 const MARGIN = 12
 
 function isTestHarness(): boolean {
-  return !!(window as unknown as { __APEIRON_TEST__?: boolean }).__APEIRON_TEST__
+  return !!(window as unknown as { __BRIARWAKE_TEST__?: boolean }).__BRIARWAKE_TEST__
 }
 
 // Scale the whole window frame to fit the viewport. Fixed at 1 under the
@@ -191,11 +191,11 @@ export default function App() {
               />
             ))}
           </div>
-          {profile === 'classic' ? 'Apeiron' : 'Apeiron X'}
+          {profile === 'classic' ? 'Briarwake' : 'Enhanced'}
         </div>
 
         <div style={{ position: 'relative', width: GAME_W, height: GAME_H }}>
-          <ApeironCanvas
+          <BriarwakeCanvas
             width={GAME_W}
             height={GAME_H}
             settings={settings}

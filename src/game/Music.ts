@@ -35,7 +35,7 @@ class Music {
 
   private ensureContext(): AudioContext | null {
     if (typeof window === 'undefined') return null
-    if ((window as unknown as { __APEIRON_TEST__?: boolean }).__APEIRON_TEST__) return null
+    if ((window as unknown as { __BRIARWAKE_TEST__?: boolean }).__BRIARWAKE_TEST__) return null
     if (this.ctx) return this.ctx
     const Ctx: typeof AudioContext | undefined =
       window.AudioContext ??

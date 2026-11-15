@@ -86,7 +86,7 @@ async function drawCard() {
   canvas.height = H
   document.body.replaceChildren(canvas)
   const g = canvas.getContext('2d')
-  // A wide slice of the playfield, top area where the Pentipede is.
+  // A wide slice of the playfield, top area where the Thornworm is.
   const srcW = 592 * 3
   const srcH = Math.round(srcW * (H / W))
   g.drawImage(game, 0, 0, srcW, srcH, 0, 0, W, H)
@@ -100,15 +100,15 @@ async function drawCard() {
   g.font = '700 150px "Times New Roman", Georgia, serif'
   g.lineWidth = 10
   g.strokeStyle = 'rgba(20,10,4,0.9)'
-  g.strokeText('APEIRON', W / 2, 400)
+  g.strokeText('BRIARWAKE', W / 2, 400)
   const gold = g.createLinearGradient(0, 290, 0, 410)
   gold.addColorStop(0, '#ffe08a')
   gold.addColorStop(1, '#d8841e')
   g.fillStyle = gold
-  g.fillText('APEIRON', W / 2, 400)
+  g.fillText('BRIARWAKE', W / 2, 400)
   g.font = '34px Menlo, Consolas, monospace'
   g.fillStyle = '#d6eef4'
-  g.fillText('A fan remake of the 1995 Macintosh classic', W / 2, 470)
+  g.fillText('An original arcade shooter', W / 2, 470)
   g.font = '26px Menlo, Consolas, monospace'
   g.fillStyle = '#9fd6e2'
   g.fillText('Plays in your browser. Mouse, keyboard, touch or gamepad.', W / 2, 520)

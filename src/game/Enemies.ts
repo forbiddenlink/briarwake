@@ -1,15 +1,15 @@
 import { ENEMIES, GRID, GRID_RATIO } from './GameConfig'
 import type { Rect } from './Types'
 
-export function getScobsterScore(distance: number): number {
-  if (distance < GRID.CELL * 2) return ENEMIES.LARRY_THE_SCOBSTER.SCORE_NEAR
-  if (distance < GRID.CELL * 4) return ENEMIES.LARRY_THE_SCOBSTER.SCORE_MED
-  return ENEMIES.LARRY_THE_SCOBSTER.SCORE_FAR
+export function getWeaverScore(distance: number): number {
+  if (distance < GRID.CELL * 2) return ENEMIES.ORRIN_THE_WEAVER.SCORE_NEAR
+  if (distance < GRID.CELL * 4) return ENEMIES.ORRIN_THE_WEAVER.SCORE_MED
+  return ENEMIES.ORRIN_THE_WEAVER.SCORE_FAR
 }
 
-export function getScobsterDistance(player: Rect, scobster: Rect): number {
-  const dx = scobster.x + scobster.w / 2 - (player.x + player.w / 2)
-  const dy = scobster.y + scobster.h / 2 - (player.y + player.h / 2)
+export function getWeaverDistance(player: Rect, weaver: Rect): number {
+  const dx = weaver.x + weaver.w / 2 - (player.x + player.w / 2)
+  const dy = weaver.y + weaver.h / 2 - (player.y + player.h / 2)
   return Math.hypot(dx, dy)
 }
 
@@ -25,7 +25,7 @@ export class Spider {
   private nextTurn = 0
   private baseSpeed: number
 
-  // avoidX: where the player is. Larry then comes in from the far side, so he
+  // avoidX: where the player is. Orrin then comes in from the far side, so he
   // can never appear on top of a crystal that is sitting near an edge.
   constructor(level: number, rand: () => number = Math.random, avoidX?: number) {
     this.rand = rand
@@ -37,9 +37,9 @@ export class Spider {
     const maxY = (GRID.ROWS - 1) * GRID.CELL - this.h
     this.y = minY + this.rand() * (maxY - minY)
     this.baseSpeed =
-      ENEMIES.LARRY_THE_SCOBSTER.SPEED_PX_PER_SEC_X + Math.min(80, level * 8) * GRID_RATIO
+      ENEMIES.ORRIN_THE_WEAVER.SPEED_PX_PER_SEC_X + Math.min(80, level * 8) * GRID_RATIO
     this.vx = (this.x < 0 ? 1 : -1) * this.baseSpeed
-    this.vy = (this.rand() < 0.5 ? -1 : 1) * ENEMIES.LARRY_THE_SCOBSTER.SPEED_PX_PER_SEC_Y * 0.65
+    this.vy = (this.rand() < 0.5 ? -1 : 1) * ENEMIES.ORRIN_THE_WEAVER.SPEED_PX_PER_SEC_Y * 0.65
     this.nextTurn = 0.24 + this.rand() * 0.42
   }
 
@@ -51,7 +51,7 @@ export class Spider {
     if (this.nextTurn <= 0) {
       this.vy =
         (this.rand() < 0.5 ? -1 : 1) *
-        ENEMIES.LARRY_THE_SCOBSTER.SPEED_PX_PER_SEC_Y *
+        ENEMIES.ORRIN_THE_WEAVER.SPEED_PX_PER_SEC_Y *
         (0.45 + this.rand() * 0.35)
       this.nextTurn = 0.18 + this.rand() * 0.45
     }
@@ -91,7 +91,7 @@ export class Flea {
     this.rand = rand
     this.x = Math.floor(rand() * GRID.COLS) * GRID.CELL
     this.y = -GRID.CELL
-    this.vy = ENEMIES.GROUCHO_THE_FLICK.SPEED_PX_PER_SEC_Y
+    this.vy = ENEMIES.MIZZLE_THE_DRIPPER.SPEED_PX_PER_SEC_Y
     this.dropMushrooms = rand() < 0.85
   }
 
@@ -108,7 +108,7 @@ export class Flea {
     if (!this.dropMushrooms) return false
     if (this.dropAccumulator < GRID.CELL * 1.2) return false
     this.dropAccumulator = 0
-    return this.rand() < ENEMIES.GROUCHO_THE_FLICK.MUSHROOM_DROP_CHANCE
+    return this.rand() < ENEMIES.MIZZLE_THE_DRIPPER.MUSHROOM_DROP_CHANCE
   }
 
   rect(): Rect {
@@ -116,8 +116,8 @@ export class Flea {
   }
 }
 
-export class Gecko {
-  w = GRID.CELL * 1.5 // Larger for better visibility (Gordon is a gecko!)
+export class Skitter {
+  w = GRID.CELL * 1.5 // Larger for better visibility (Tamsin is a skitter!)
   h = GRID.CELL * 1.1
   dead = false
   x: number
@@ -130,7 +130,7 @@ export class Gecko {
     this.x = rand() < 0.5 ? -GRID.CELL : GRID.COLS * GRID.CELL
     this.baseY = (5 + Math.floor(rand() * 10)) * GRID.CELL
     this.y = this.baseY
-    this.baseSpeed = ENEMIES.GORDON_THE_GECKO.SPEED_PX_PER_SEC_X
+    this.baseSpeed = ENEMIES.TAMSIN_THE_SKITTER.SPEED_PX_PER_SEC_X
     this.vx = (this.x < 0 ? 1 : -1) * this.baseSpeed
   }
 

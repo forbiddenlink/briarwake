@@ -7,21 +7,21 @@ page.on('console', (m) => console.log('console:', m.type(), m.text().slice(0, 20
 page.on('pageerror', (e) => console.log('pageerror:', String(e).slice(0, 300)))
 const t0 = Date.now()
 await page.addInitScript(() => {
-  window.__APEIRON_TEST__ = true
-  window.__APEIRON_3D__ = true
+  window.__BRIARWAKE_TEST__ = true
+  window.__BRIARWAKE_3D__ = true
 })
 await page.goto('http://localhost:4173/', { waitUntil: 'domcontentloaded' })
 try {
-  await page.waitForFunction(() => !!window.__apeironEngine, null, { timeout: 60000 })
+  await page.waitForFunction(() => !!window.__briarwakeEngine, null, { timeout: 60000 })
   console.log('engine ready after ms', Date.now() - t0)
-  await page.waitForFunction(() => window.__apeironEngine.atlas?.tiles.size >= 89, null, {
+  await page.waitForFunction(() => window.__briarwakeEngine.atlas?.tiles.size >= 89, null, {
     timeout: 120000,
   })
   console.log('all tiles baked after ms', Date.now() - t0)
   console.log(
     'atlas',
     await page.evaluate(() => {
-      const a = window.__apeironEngine.atlas
+      const a = window.__briarwakeEngine.atlas
       return a ? [a.canvas.width, a.canvas.height, a.tiles.size] : null
     })
   )

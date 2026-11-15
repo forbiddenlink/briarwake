@@ -15,7 +15,7 @@ export interface SidebarState {
   autofireTime: number
 }
 
-// Draws the score panel: logo, Score, Bonus, Lives, Yummy strip and Wave.
+// Draws the score panel: logo, Score, Bonus, Lives, Bloom strip and Wave.
 export class SidebarRenderer {
   private texture: HTMLCanvasElement | null = null
   private textureWidth = 0
@@ -64,8 +64,8 @@ export class SidebarRenderer {
       g.fillStyle = logoGrad
       g.strokeStyle = 'rgba(21, 12, 6, 0.95)'
       g.lineWidth = 2
-      g.strokeText('Apeiron', w * 0.47, 8)
-      g.fillText('Apeiron', w * 0.47, 8)
+      g.strokeText('Briarwake', w * 0.47, 8)
+      g.fillText('Briarwake', w * 0.47, 8)
       if (!classicProfile) {
         g.font = 'italic 700 26px Georgia, serif'
         g.fillStyle = '#d77a1c'

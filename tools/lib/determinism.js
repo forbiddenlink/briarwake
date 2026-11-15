@@ -1,5 +1,5 @@
 /**
- * Determinism harness for headless Apeiron capture.
+ * Determinism harness for headless Briarwake capture.
  *
  * WHY: Engine.ts drives its own rAF loop off performance.now() with a time
  * accumulator, and 36 Math.random() call sites live in the render/gameplay
@@ -108,7 +108,7 @@ export function installDeterminism(opts) {
   // Advance the virtual clock by one fixed step and flush the rAF callbacks
   // that were queued for this frame. Callbacks that re-schedule (the game
   // loop) land in the next frame's batch, so one pump == one rendered frame.
-  window.__apeironPumpFrame = () => {
+  window.__briarwakePumpFrame = () => {
     clock.t += fixedDtMs
     const batch = rafQueue
     rafQueue = []
@@ -117,12 +117,12 @@ export function installDeterminism(opts) {
     }
     return clock.t
   }
-  window.__apeironPump = (frames) => {
-    for (let i = 0; i < frames; i++) window.__apeironPumpFrame()
+  window.__briarwakePump = (frames) => {
+    for (let i = 0; i < frames; i++) window.__briarwakePumpFrame()
     return clock.t
   }
-  window.__apeironClock = clock
-  window.__APEIRON_TEST__ = true
+  window.__briarwakeClock = clock
+  window.__BRIARWAKE_TEST__ = true
 }
 
 /**
@@ -140,7 +140,7 @@ export function installDeterminismSource(opts) {
  * Unlike installDeterminism, this leaves performance.now / rAF / the clock
  * REAL so we observe true runtime cost. It only (a) seeds Math.random for a
  * reproducible workload and (b) wraps rAF to record the real delta between
- * presented frames into window.__apeironFrameTimes (ms). Distribution of these
+ * presented frames into window.__briarwakeFrameTimes (ms). Distribution of these
  * -- p50/p95/p99/worst -- is what exposes stalls a median FPS hides.
  *
  * @param {{ seed?: number }} opts
@@ -157,7 +157,7 @@ export function installProfiler(opts) {
   }
 
   const times = []
-  window.__apeironFrameTimes = times
+  window.__briarwakeFrameTimes = times
   const realRaf = window.requestAnimationFrame.bind(window)
   let last = -1
   // Multiple rAF users (engine + sparticles overlay) can fire on the SAME
@@ -171,5 +171,5 @@ export function installProfiler(opts) {
       }
       return cb(ts)
     })
-  window.__APEIRON_TEST__ = true
+  window.__BRIARWAKE_TEST__ = true
 }

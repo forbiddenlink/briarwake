@@ -15,7 +15,7 @@ export interface GameSettings {
   sprites3d: boolean
 }
 
-const STORAGE_KEY = 'apeiron_settings'
+const STORAGE_KEY = 'briarwake_settings'
 
 function prefersReducedMotion(): boolean {
   try {
@@ -43,7 +43,7 @@ export function defaultSettings(): GameSettings {
 }
 
 function isTestHarness(): boolean {
-  return !!(window as unknown as { __APEIRON_TEST__?: boolean }).__APEIRON_TEST__
+  return !!(window as unknown as { __BRIARWAKE_TEST__?: boolean }).__BRIARWAKE_TEST__
 }
 
 function clampVolume(v: unknown, fallback: number): number {

@@ -27,7 +27,7 @@ describe('Engine: losing a life', () => {
     const engine = await makeEngine()
     engine.startNewGame(0xc0ffee)
 
-    // Nobody touches the controls: the Pentipede walks down onto the player.
+    // Nobody touches the controls: the Thornworm walks down onto the player.
     const losses: number[] = []
     let lives = engine.lives
     for (let frame = 1; frame <= 60 * 240 && engine.mode === 'playing'; frame++) {
@@ -127,16 +127,16 @@ describe('Engine: cheat words', () => {
     const engine = await makeEngine()
     engine.startNewGame(7)
     const best = engine.highScore
-    engine.applyCheat('HECTOR')
+    engine.applyCheat('MARIGOLD')
     expect(engine.lives).toBe(8)
     expect(engine.cheated).toBe(true)
-    engine.applyCheat('PERNTS')
+    engine.applyCheat('TALLY')
     expect(engine.score).toBeGreaterThan(0)
     expect(engine.highScore).toBe(best)
   })
 })
 
-describe('Engine: Groucho the Flick', () => {
+describe('Engine: Mizzle the Dripper', () => {
   it('does not rain fleas on an untouched first wave', async () => {
     const engine = await makeEngine()
     engine.startNewGame(3)

@@ -26,9 +26,9 @@ export type Profile = 'classic' | 'x'
 export const FRAMES = {
   segment: 8,
   crystal: 16,
-  scobster: 6,
-  flick: 4,
-  gecko: 6,
+  weaver: 6,
+  dripper: 4,
+  skitter: 6,
   ufo: 8,
   coin: 8,
 } as const
@@ -174,7 +174,7 @@ function segment(profile: Profile, head: boolean, frame: number): THREE.Object3D
   const parts: THREE.Object3D[] = [
     ball(5.7, color, [0, 6 + bob, 0], [1, 0.86, 1], { rough: 0.22, clearcoat: 1 }),
   ]
-  // Cheech wears sneakers.
+  // Wick wears sneakers.
   for (const side of [-1, 1]) {
     const s = swing * side
     const x = side * 3.3 + s * 1.2
@@ -227,9 +227,9 @@ function crystal(frame: number): THREE.Object3D[] {
   ]
 }
 
-// Larry the Scobster: part scorpion, part lobster. Claws snap.
-function scobster(frame: number): THREE.Object3D[] {
-  const snap = 0.5 + 0.5 * Math.sin((frame / FRAMES.scobster) * Math.PI * 2)
+// Orrin the Weaver: part scorpion, part lobster. Claws snap.
+function weaver(frame: number): THREE.Object3D[] {
+  const snap = 0.5 + 0.5 * Math.sin((frame / FRAMES.weaver) * Math.PI * 2)
   const shell = 0x3f9a22
   const dark = 0x1f5a1c
   const parts: THREE.Object3D[] = [
@@ -259,7 +259,7 @@ function scobster(frame: number): THREE.Object3D[] {
     // Legs
     for (let i = 0; i < 3; i++) {
       const z = 2.6 - i * 2.4
-      const lift = Math.sin((frame / FRAMES.scobster) * Math.PI * 2 + i * 2.1) * 0.6
+      const lift = Math.sin((frame / FRAMES.weaver) * Math.PI * 2 + i * 2.1) * 0.6
       parts.push(
         limb([side * 5.4, 4.2, z], [side * 8.0, 0.6 + Math.max(0, lift), z + 0.6], 0.45, dark)
       )
@@ -268,9 +268,9 @@ function scobster(frame: number): THREE.Object3D[] {
   return parts
 }
 
-// Groucho the Flick: a round flea with the glasses, brows and mustache.
-function flick(frame: number): THREE.Object3D[] {
-  const kick = Math.sin((frame / FRAMES.flick) * Math.PI * 2)
+// Mizzle the Dripper: a round flea with the glasses, brows and mustache.
+function dripper(frame: number): THREE.Object3D[] {
+  const kick = Math.sin((frame / FRAMES.dripper) * Math.PI * 2)
   const body = 0x2456c8
   const parts: THREE.Object3D[] = [
     ball(5.0, body, [0, 7.2, 0], [0.92, 1.12, 0.92], { rough: 0.25, clearcoat: 1 }),
@@ -293,9 +293,9 @@ function flick(frame: number): THREE.Object3D[] {
   return parts
 }
 
-// Gordon the Gecko, facing +x. The renderer mirrors him when he runs left.
-function gecko(frame: number): THREE.Object3D[] {
-  const t = (frame / FRAMES.gecko) * Math.PI * 2
+// Tamsin the Skitter, facing +x. The renderer mirrors him when he runs left.
+function skitter(frame: number): THREE.Object3D[] {
+  const t = (frame / FRAMES.skitter) * Math.PI * 2
   const sway = Math.sin(t)
   const skin = 0x2fae3c
   const belly = 0xb7dc5c
@@ -369,7 +369,7 @@ function ufo(frame: number): THREE.Object3D[] {
   return parts
 }
 
-// How far a Yummy coin is turned away from the camera on each frame (radians).
+// How far a Bloom coin is turned away from the camera on each frame (radians).
 export function coinAngle(frame: number): number {
   return Math.sin((frame / FRAMES.coin) * Math.PI * 2) * 0.62
 }
@@ -475,9 +475,9 @@ export function bakeSprites(): SpriteAtlas | null {
         jobs.push([`seg:${profile}:h:${f}`, () => segment(profile, true, f)])
       }
     }
-    for (let f = 0; f < FRAMES.scobster; f++) jobs.push([`scobster:${f}`, () => scobster(f)])
-    for (let f = 0; f < FRAMES.flick; f++) jobs.push([`flick:${f}`, () => flick(f)])
-    for (let f = 0; f < FRAMES.gecko; f++) jobs.push([`gecko:${f}`, () => gecko(f)])
+    for (let f = 0; f < FRAMES.weaver; f++) jobs.push([`weaver:${f}`, () => weaver(f)])
+    for (let f = 0; f < FRAMES.dripper; f++) jobs.push([`dripper:${f}`, () => dripper(f)])
+    for (let f = 0; f < FRAMES.skitter; f++) jobs.push([`skitter:${f}`, () => skitter(f)])
     for (let f = 0; f < FRAMES.ufo; f++) jobs.push([`ufo:${f}`, () => ufo(f)])
     for (let f = 0; f < FRAMES.coin; f++) jobs.push([`coin:${f}`, () => coin(f)])
     jobs.push(['mush:reflective', () => mushroom('classic', false, 4, true)])
@@ -514,7 +514,7 @@ export function bakeSprites(): SpriteAtlas | null {
 
       // Soft contact shadow, drawn under the render. The saucer flies: no shadow.
       if (!name.startsWith('ufo') && !name.startsWith('coin')) {
-        const wide = name.startsWith('gecko') || name.startsWith('scobster') ? 11 : 7
+        const wide = name.startsWith('skitter') || name.startsWith('weaver') ? 11 : 7
         ctx.save()
         ctx.translate(x + PX / 2, y + groundY)
         ctx.scale(1, Math.sin(ELEVATION))

@@ -2,7 +2,7 @@ import type React from 'react'
 import { useEffect, useState } from 'react'
 import { formatSeed } from '../game/HighScores'
 import { accuracyPercent, type RunStats } from '../game/RunStats'
-import { CheechArt } from './panels/CheechArt'
+import { WickArt } from './panels/WickArt'
 import { type Accent, buttonStyle, COLORS, DISPLAY_FONT, UI_FONT } from './ui'
 
 export type OverlayName = 'options' | 'howto' | 'vermin' | 'scores' | 'about'
@@ -76,18 +76,18 @@ function RunSummary({ stats }: { stats: RunStats }) {
           </tr>
           <tr>
             <td style={cell}>Segments</td>
-            <td style={num}>{k.pentipede}</td>
+            <td style={num}>{k.thornworm}</td>
           </tr>
           <tr>
-            <td style={cell}>Larry / Groucho</td>
+            <td style={cell}>Orrin / Mizzle</td>
             <td style={num}>
-              {k.scobster} / {k.flick}
+              {k.weaver} / {k.dripper}
             </td>
           </tr>
           <tr>
-            <td style={cell}>Gordon / Ships</td>
+            <td style={cell}>Tamsin / Ships</td>
             <td style={num}>
-              {k.gecko} / {k.ufo}
+              {k.skitter} / {k.ufo}
             </td>
           </tr>
           <tr>
@@ -186,7 +186,7 @@ export function Menu(props: MenuProps) {
             textShadow: '0 3px 0 rgba(0,0,0,0.6)',
           }}
         >
-          {visualProfile === 'classic' ? 'APEIRON' : 'APEIRON X'}
+          {visualProfile === 'classic' ? 'BRIARWAKE' : 'BRIARWAKE X'}
         </h1>
       ) : null}
 
@@ -210,7 +210,7 @@ export function Menu(props: MenuProps) {
 
       {mode === 'gameover' ? (
         <>
-          <CheechArt profile={visualProfile} />
+          <WickArt profile={visualProfile} />
           <h2
             style={{
               margin: '6px 0 4px',
