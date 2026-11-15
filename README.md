@@ -2,7 +2,7 @@
 
 Briarwake is an original arcade shooter built with React + Vite. All
 assets are procedural: no image or audio files - sprites come from
-`ProceduralSprites`, audio from `AudioSynth`/`Music`. Live at <https://apeiron-remake.vercel.app/> (the deployment keeps the repo's former name).
+`ProceduralSprites`, audio from `AudioSynth`/`Music`. Live at <https://briarwake.vercel.app/> (the former apeiron-remake.vercel.app URL still works as an alias).
 
 ## Features
 
