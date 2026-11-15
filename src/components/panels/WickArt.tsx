@@ -3,9 +3,9 @@ import { drawSegment, type VisualProfile } from '../../game/ProceduralSprites'
 import { drawTile, getSharedAtlas } from '../../game/render3d/SpriteBaker'
 import { SpriteIcon } from './SpriteIcon'
 
-// Game over card: the Pentipede relaxing with a hookah, a nod to the original's
+// Game over card: the Thornworm relaxing with a hookah, a relaxed
 // game over picture. Built from the game's own segment sprite plus a few shapes.
-export function CheechArt({ profile }: { profile: VisualProfile }) {
+export function WickArt({ profile }: { profile: VisualProfile }) {
   const draw = useCallback(
     (g: CanvasRenderingContext2D) => {
       // Floor shadow strip
@@ -78,7 +78,7 @@ export function CheechArt({ profile }: { profile: VisualProfile }) {
       size={30}
       zoom={2.6}
       background="#17141f"
-      label="The Pentipede relaxing with a hookah"
+      label="The Thornworm relaxing with a hookah"
     />
   )
 }

@@ -12,7 +12,7 @@ export interface ScoreEntry {
 }
 
 export const MAX_SCORES = 10
-const STORAGE_KEY = 'apeiron_scores'
+const STORAGE_KEY = 'briarwake_scores'
 
 export function insertScore(table: ScoreEntry[], entry: ScoreEntry): ScoreEntry[] {
   if (!Number.isFinite(entry.score) || entry.score <= 0) return table.slice(0, MAX_SCORES)
@@ -67,7 +67,7 @@ export function dateKey(d: Date): string {
 
 // Same calendar day gives everyone the same field. FNV-1a over the date key.
 export function dailySeed(d: Date): number {
-  const key = `apeiron-daily-${dateKey(d)}`
+  const key = `briarwake-daily-${dateKey(d)}`
   let h = 0x811c9dc5
   for (let i = 0; i < key.length; i++) {
     h ^= key.charCodeAt(i)

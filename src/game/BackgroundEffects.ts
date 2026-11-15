@@ -1,6 +1,6 @@
 import type { VisualProfile } from './ProceduralSprites'
 
-// Background themes that change every few waves (like original Apeiron)
+// Background themes that change every few waves (like classic)
 export type BackgroundTheme = 'field' | 'desert' | 'ocean' | 'neon' | 'cosmic' | 'toxic'
 
 export class BackgroundEffects {

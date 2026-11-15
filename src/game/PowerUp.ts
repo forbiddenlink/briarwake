@@ -32,7 +32,7 @@ export class PowerUp {
     }
   }
 
-  // A shot knocks a Yummy coin back out of the field, matching the original
+  // A shot knocks a Bloom coin back out of the field, matching the original
   // game's risk that shooting a coin can waste its power-up.
   deflect(): void {
     this.verticalSpeed = -220 * GRID_RATIO
@@ -57,7 +57,7 @@ export class PowerUp {
     g.arc(0, 0, r + 3, 0, Math.PI * 2)
     g.fill()
 
-    // In Apeiron, power-ups are Yummy coins. Keep the type mark so the
+    // In Briarwake, power-ups are Bloom coins. Keep the type mark so the
     // procedural remake remains readable without copying the original art.
     g.globalAlpha = 1
     if (body?.()) {

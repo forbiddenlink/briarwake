@@ -33,7 +33,7 @@ describe('Mouse movement vector', () => {
     })
   })
 
-  it('catches up with a flick across the whole field in about half a second', () => {
+  it('catches up with a dripper across the whole field in about half a second', () => {
     const width = GRID.COLS * GRID.CELL
     let x = 0
     let frames = 0

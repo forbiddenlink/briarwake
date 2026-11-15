@@ -1,7 +1,7 @@
 # Headless harness — reproducibility, regression, profiling
 
 Ported from the engineering discipline in `mshumer/Claude-of-Duty` (not its 3D
-rendering). Because the Apeiron engine is deterministic + fixed-timestep, a
+rendering). Because the Briarwake engine is deterministic + fixed-timestep, a
 seeded run renders **bit-identical** pixels, so we get a hard pixel-diff
 regression gate rather than soft assertions.
 
@@ -11,7 +11,7 @@ Injected via Playwright `addInitScript` **before** app boot — zero engine edit
 
 - `Math.random` → seeded mulberry32 (neutralizes all cosmetic RNG call sites)
 - `performance.now` / `Date.now` → a virtual clock we advance by hand
-- `requestAnimationFrame` → a manual queue; `window.__apeironPump(n)` advances
+- `requestAnimationFrame` → a manual queue; `window.__briarwakePump(n)` advances
   exactly `n` fixed `1/60` frames (one tick each)
 - `AudioContext` → universal no-op Proxy (headless has no audio device)
 
@@ -30,7 +30,7 @@ pnpm run vr:playtest   # scripted smoke: hold fire, sweep, assert invariants, fa
 pnpm run vr:capture -- --out /tmp/x.png --play --frames 240   # one ad-hoc shot
 ```
 
-Point at a different server with `APEIRON_URL=... pnpm run vr:gate` or `--url`.
+Point at a different server with `BRIARWAKE_URL=... pnpm run vr:gate` or `--url`.
 
 ## Workflow
 

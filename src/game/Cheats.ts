@@ -1,14 +1,12 @@
-// The 1995 game's cheat words, typed while the game is paused (source: Lucy
-// Snyder's review, which lists the word and its effect). Amounts the review does
-// not give are remake calibration.
+// Cheat words, typed while the game is paused. Amounts are this game's own tuning.
 export const CHEATS = {
-  SNAPPLE: 'lock',
-  PERNTS: 'points',
-  NALA: 'shield',
-  SQUISH: 'machine_gun',
-  USMC: 'bonus',
-  DJARUM: 'diamond',
-  HECTOR: 'lives',
+  LANTERN: 'lock',
+  TALLY: 'points',
+  HAWTHORN: 'shield',
+  RATTLE: 'machine_gun',
+  WINDFALL: 'bonus',
+  PRISM: 'diamond',
+  MARIGOLD: 'lives',
 } as const
 
 export type CheatWord = keyof typeof CHEATS

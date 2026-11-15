@@ -1,4 +1,4 @@
-# Apeiron Remake — Architecture Contract
+# Briarwake Remake — Architecture Contract
 
 Snapshot as of 2026-11-10. This is the agent/contributor contract: subsystem
 ownership boundaries and the shared vocabulary. Keep it a frozen destination —
@@ -30,9 +30,9 @@ silently trusted (see the docs-rot discipline).
 | Field        | `Grid.ts`                                                                                       | mushroom grid, cell occupancy, reflective/psychedelic flags                                                                                              |
 | Player       | `Player.ts`                                                                                     | movement state, bullets, power-up effects, ADS/fire cadence                                                                                              |
 | Centipede    | `Centipede.ts`                                                                                  | segment chain, descent, splitting, touchdown                                                                                                             |
-| Enemies      | `Enemies.ts`                                                                                    | Spider = Larry the Scobster (chase, proximity score), Flea (mushroom drop), Gecko (poison)                                                               |
+| Enemies      | `Enemies.ts`                                                                                    | Spider = Orrin the Weaver (chase, proximity score), Flea (mushroom drop), Skitter (poison)                                                               |
 | UFO          | `UFO.ts`                                                                                        | bonus UFO behavior                                                                                                                                       |
-| Power-ups    | `PowerUp.ts`                                                                                    | yummy lifecycle, fall, collect/miss                                                                                                                      |
+| Power-ups    | `PowerUp.ts`                                                                                    | bloom lifecycle, fall, collect/miss                                                                                                                      |
 | Render       | `ProceduralSprites.ts`, `BackgroundEffects.ts`, `SidebarRenderer.ts`, `render3d/SpriteBaker.ts` | 2D canvas draw of every entity, backdrop and the score panel. Characters are 3D models baked to a sprite atlas at boot, with the 2D drawings as fallback |
 | FX           | `ParticleSystem.ts`, `SparticleEffects.ts`                                                      | impact/trail/explosion particles, DOM overlay                                                                                                            |
 | Audio        | `AudioSynth.ts`, `Music.ts`                                                                     | synthesized SFX (one master gain) + step-sequenced music                                                                                                 |
@@ -56,8 +56,8 @@ silently trusted (see the docs-rot discipline).
 
 ## Test seam
 
-`ApeironCanvas` exposes `window.__apeironEngine` only when
-`window.__APEIRON_TEST__` is set (the headless harness sets it via
+`BriarwakeCanvas` exposes `window.__briarwakeEngine` only when
+`window.__BRIARWAKE_TEST__` is set (the headless harness sets it via
 `addInitScript` before boot). No effect on normal runs.
 
 See `tools/README.md` for the reproducibility + profiling harness.

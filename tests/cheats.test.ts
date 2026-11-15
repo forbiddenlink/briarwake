@@ -13,25 +13,24 @@ function type(text: string) {
 }
 
 describe('Cheat words', () => {
-  it('recognizes every word from the 1995 game', () => {
+  it('recognizes every word from the reference game', () => {
     for (const word of Object.keys(CHEATS)) {
       expect(type(word).word).toBe(word)
     }
   })
 
   it('ignores case and leading noise, and clears after a match', () => {
-    expect(type('xxsquish')).toEqual({ buffer: '', word: 'SQUISH' })
+    expect(type('xxrattle')).toEqual({ buffer: '', word: 'RATTLE' })
   })
 
   it('does not fire on a partial word', () => {
-    expect(type('SNAPPL').word).toBeNull()
+    expect(type('LANTER').word).toBeNull()
   })
 
   it('knows when P is part of a word rather than the resume key', () => {
-    expect(continuesCheat('SNA', 'P')).toBe(true)
-    expect(continuesCheat('SNAP', 'P')).toBe(true)
-    expect(continuesCheat('', 'P')).toBe(true) // PERNTS starts with P
-    expect(continuesCheat('NAL', 'P')).toBe(true) // ...so P can always start one
+    expect(continuesCheat('LAN', 'T')).toBe(true)
+    expect(continuesCheat('', 'P')).toBe(true) // PRISM starts with P
+    expect(continuesCheat('PRI', 'S')).toBe(true)
     expect(continuesCheat('', 'Q')).toBe(false)
   })
 })

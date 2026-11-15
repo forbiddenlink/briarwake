@@ -1,7 +1,7 @@
 {
-  "name": "Apeiron Remake",
-  "short_name": "Apeiron",
-  "description": "A fan remake of Ambrosia Software's 1995 Macintosh game Apeiron.",
+  "name": "Briarwake Remake",
+  "short_name": "Briarwake",
+  "description": "Briarwake, an original arcade shooter.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "landscape",

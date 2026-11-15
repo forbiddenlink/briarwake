@@ -3,7 +3,7 @@ import { Engine, type EngineSnapshot } from '../game/Engine'
 import { sparticleEffects } from '../game/SparticleEffects'
 import type { GameSettings } from '../settings'
 
-interface ApeironCanvasProps {
+interface BriarwakeCanvasProps {
   width: number
   height: number
   settings: GameSettings
@@ -15,7 +15,7 @@ interface ApeironCanvasProps {
   onEngine: (engine: Engine | null) => void
 }
 
-export function ApeironCanvas({
+export function BriarwakeCanvas({
   width,
   height,
   settings,
@@ -23,7 +23,7 @@ export function ApeironCanvas({
   uiBlocked,
   onSnapshot,
   onEngine,
-}: ApeironCanvasProps) {
+}: BriarwakeCanvasProps) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const ref = useRef<HTMLCanvasElement | null>(null)
   const engineRef = useRef<Engine | null>(null)
@@ -36,7 +36,7 @@ export function ApeironCanvas({
   const pixelRatioRef = useRef(pixelRatio)
   pixelRatioRef.current = pixelRatio
 
-  // Sparticle background effects (Apeiron X only)
+  // Sparticle background effects (Enhanced only)
   useEffect(() => {
     if (!containerRef.current) return
     sparticleEffects.attach(containerRef.current)
@@ -58,9 +58,9 @@ export function ApeironCanvas({
     engineRef.current = engine
     // Test seam: headless visual-regression / playtest harness drives the
     // engine directly (see tools/). No-op in normal runs unless the harness
-    // set window.__APEIRON_TEST__ via addInitScript before boot.
-    if ((window as unknown as { __APEIRON_TEST__?: boolean }).__APEIRON_TEST__) {
-      ;(window as unknown as { __apeironEngine?: Engine }).__apeironEngine = engine
+    // set window.__BRIARWAKE_TEST__ via addInitScript before boot.
+    if ((window as unknown as { __BRIARWAKE_TEST__?: boolean }).__BRIARWAKE_TEST__) {
+      ;(window as unknown as { __briarwakeEngine?: Engine }).__briarwakeEngine = engine
     }
 
     engine.onStateChange = (state) => {
@@ -117,7 +117,7 @@ export function ApeironCanvas({
         ref={ref}
         width={width}
         height={height}
-        aria-label="Apeiron playfield"
+        aria-label="Briarwake playfield"
         style={{
           display: 'block',
           width,

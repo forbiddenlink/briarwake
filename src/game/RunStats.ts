@@ -2,7 +2,7 @@
 export interface RunStats {
   shots: number
   hits: number
-  kills: { pentipede: number; scobster: number; flick: number; gecko: number; ufo: number }
+  kills: { thornworm: number; weaver: number; dripper: number; skitter: number; ufo: number }
   yummiesCollected: number
   yummiesMissed: number
   // Points earned in each wave, in order. The last entry is the wave the run ended on.
@@ -13,7 +13,7 @@ export function newRunStats(): RunStats {
   return {
     shots: 0,
     hits: 0,
-    kills: { pentipede: 0, scobster: 0, flick: 0, gecko: 0, ufo: 0 },
+    kills: { thornworm: 0, weaver: 0, dripper: 0, skitter: 0, ufo: 0 },
     yummiesCollected: 0,
     yummiesMissed: 0,
     waveScores: [],

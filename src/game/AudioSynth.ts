@@ -1,4 +1,4 @@
-// Advanced WebAudio synthesizer for Apeiron-style SFX and voice synthesis
+// Advanced WebAudio synthesizer for Briarwake-style SFX and voice synthesis
 let ctx: AudioContext | null = null
 function ac(): AudioContext | null {
   if (typeof window === 'undefined') return null
@@ -109,29 +109,29 @@ function crystalHit(baseFreq: number, volume = 0.22) {
 
 // Voice synthesis approximation
 function voiceClip(
-  type: 'scobster' | 'powerup' | 'bonus' | 'yeah' | 'groucho' | 'gordon' | 'ufo' | 'yummy'
+  type: 'weaver' | 'powerup' | 'bonus' | 'yeah' | 'mizzle' | 'tamsin' | 'ufo' | 'bloom'
 ) {
   const a = ac()
   if (!a) return
   const t0 = a.currentTime
 
   switch (type) {
-    case 'scobster':
-      // "Scobsters!" - Larry's signature call
+    case 'weaver':
+      // "Weavers!" - Orrin's signature call
       fmOsc(400, 50, 30, 0.2, 'sawtooth', 0.3)
       setTimeout(() => fmOsc(300, 40, 20, 0.15, 'sawtooth', 0.25), 200)
       setTimeout(() => fmOsc(350, 45, 25, 0.1, 'sawtooth', 0.2), 350)
       break
 
-    case 'groucho':
-      // "Heh heh heh!" - Groucho's laugh
+    case 'mizzle':
+      // "Heh heh heh!" - Mizzle's laugh
       fmOsc(250, 30, 20, 0.15, 'square', 0.25)
       setTimeout(() => fmOsc(230, 28, 18, 0.15, 'square', 0.23), 160)
       setTimeout(() => fmOsc(210, 26, 16, 0.15, 'square', 0.21), 320)
       break
 
-    case 'gordon':
-      // "Ssssss!" - Gordon's hiss
+    case 'tamsin':
+      // "Ssssss!" - Tamsin's hiss
       noise(0.3, 0.15, 'pink')
       fmOsc(800, 100, 60, 0.3, 'sawtooth', 0.2)
       break
@@ -149,8 +149,8 @@ function voiceClip(
       setTimeout(() => fmOsc(700, 80, 60, 0.1, 'square', 0.25), 350)
       break
 
-    case 'yummy':
-      // "Yummy!" - Cheerful collection sound
+    case 'bloom':
+      // "Bloom!" - Cheerful collection sound
       fmOsc(600, 75, 45, 0.15, 'sine', 0.3)
       setTimeout(() => fmOsc(450, 55, 35, 0.2, 'sine', 0.25), 150)
       break
@@ -183,23 +183,23 @@ export const sfx = {
     noise(0.05, 0.1, 'white')
   },
 
-  // Larry the Scobster (Spider)
+  // Orrin the Weaver (Spider)
   spider() {
-    voiceClip('scobster')
+    voiceClip('weaver')
     fmOsc(520, 130, 60, 0.2, 'triangle', 0.2)
     setTimeout(() => noise(0.15, 0.1, 'pink'), 100)
   },
 
-  // Groucho the Flick (Flea)
+  // Mizzle the Dripper (Flea)
   flea() {
-    voiceClip('groucho')
+    voiceClip('mizzle')
     fmOsc(430, 215, 40, 0.15, 'triangle', 0.18)
     setTimeout(() => noise(0.1, 0.08, 'pink'), 150)
   },
 
-  // Gordon the Gecko
-  gecko() {
-    voiceClip('gordon')
+  // Tamsin the Skitter
+  skitter() {
+    voiceClip('tamsin')
     fmOsc(860, 215, 80, 0.2, 'sawtooth', 0.2)
     setTimeout(() => noise(0.15, 0.1, 'brown'), 100)
   },
@@ -211,9 +211,9 @@ export const sfx = {
     setTimeout(() => noise(0.3, 0.1, 'pink'), 200)
   },
 
-  // Power-up (Yummy) collection
+  // Power-up (Bloom) collection
   powerup() {
-    voiceClip('yummy')
+    voiceClip('bloom')
     fmOsc(600, 150, 60, 0.2, 'sine', 0.2)
     setTimeout(() => fmOsc(800, 200, 80, 0.15, 'sine', 0.18), 150)
   },
@@ -247,7 +247,7 @@ export const sfx = {
     setTimeout(() => noise(0.5, 0.15, 'brown'), 180)
   },
 
-  // RASPBERRY sound - "pffttt" for missed bonuses (like original Apeiron!)
+  // RASPBERRY sound - "pffttt" for missed bonuses (like classic!)
   raspberry() {
     noise(0.25, 0.12, 'pink')
     fmOsc(120, 40, 30, 0.2, 'sawtooth', 0.15)

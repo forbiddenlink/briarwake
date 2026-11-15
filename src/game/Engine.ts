@@ -3,7 +3,7 @@ import { BackgroundEffects } from './BackgroundEffects'
 import { Centipede, type Segment } from './Centipede'
 import { CHEAT_BONUS, CHEAT_POINTS, CHEATS, continuesCheat, feedCheatBuffer } from './Cheats'
 import { CLASSIC_BONUS, WEAPONS } from './Constants'
-import { Flea, Gecko, getScobsterDistance, getScobsterScore, Spider } from './Enemies'
+import { Flea, getWeaverDistance, getWeaverScore, Skitter, Spider } from './Enemies'
 import {
   COINS,
   DEBUG,
@@ -35,7 +35,7 @@ import {
   shouldSpawnFlea,
   spawnsCoins,
   spawnsTouchdownFriends,
-  tickScobsterSpawn,
+  tickWeaverSpawn,
   usesModernScoring,
   usesPsychedelicMushrooms,
   usesReflectiveMushrooms,
@@ -50,11 +50,11 @@ import { PowerUp } from './PowerUp'
 import {
   drawBullet,
   drawFlea,
-  drawGecko,
   drawMushroom,
   drawMuzzleFlash,
   drawPlayer,
   drawSegment,
+  drawSkitter,
   drawSpider,
   drawUFO,
   type VisualProfile,
@@ -141,7 +141,7 @@ const MAX_FRAME_SECONDS = 0.1
 function isTestHarness(): boolean {
   return (
     typeof window !== 'undefined' &&
-    !!(window as unknown as { __APEIRON_TEST__?: boolean }).__APEIRON_TEST__
+    !!(window as unknown as { __BRIARWAKE_TEST__?: boolean }).__BRIARWAKE_TEST__
   )
 }
 
@@ -214,7 +214,7 @@ export class Engine {
   centipedes: Centipede[] = []
   spiders: Spider[] = []
   fleas: Flea[] = []
-  geckos: Gecko[] = []
+  skitters: Skitter[] = []
   ufos: UFO[] = []
   powerUps: PowerUp[] = []
   fallingMushrooms: {
@@ -254,14 +254,14 @@ export class Engine {
   private bonusCarry = 0
 
   private spiderTimer = randRange(
-    ENEMIES.LARRY_THE_SCOBSTER.SPAWN_MIN_TIME,
-    ENEMIES.LARRY_THE_SCOBSTER.SPAWN_MAX_TIME,
+    ENEMIES.ORRIN_THE_WEAVER.SPAWN_MIN_TIME,
+    ENEMIES.ORRIN_THE_WEAVER.SPAWN_MAX_TIME,
     this.rand
   )
-  private fleaCd: number = ENEMIES.GROUCHO_THE_FLICK.SPAWN_COOLDOWN
-  private geckoTimer = randRange(
-    ENEMIES.GORDON_THE_GECKO.SPAWN_MIN_TIME,
-    ENEMIES.GORDON_THE_GECKO.SPAWN_MAX_TIME,
+  private fleaCd: number = ENEMIES.MIZZLE_THE_DRIPPER.SPAWN_COOLDOWN
+  private skitterTimer = randRange(
+    ENEMIES.TAMSIN_THE_SKITTER.SPAWN_MIN_TIME,
+    ENEMIES.TAMSIN_THE_SKITTER.SPAWN_MAX_TIME,
     this.rand
   )
   private ufoTimer = randRange(ENEMIES.UFO.SPAWN_MIN_TIME, ENEMIES.UFO.SPAWN_MAX_TIME, this.rand)
@@ -289,9 +289,9 @@ export class Engine {
     )
     this.sidebar = new SidebarRenderer(this.height)
     // Software WebGL in headless Chromium takes about 25 s to bake, so the harness
-    // (and CI) run on the 2D sprites. Set window.__APEIRON_3D__ to bake there anyway.
+    // (and CI) run on the 2D sprites. Set window.__BRIARWAKE_3D__ to bake there anyway.
     const wants3d =
-      !isTestHarness() || !!(window as unknown as { __APEIRON_3D__?: boolean }).__APEIRON_3D__
+      !isTestHarness() || !!(window as unknown as { __BRIARWAKE_3D__?: boolean }).__BRIARWAKE_3D__
     this.atlas = wants3d ? bakeSprites() : null
     if (wants3d) {
       bakeBackdrops(this.backgroundEffects.litSources(), (key, lit) =>
@@ -305,7 +305,7 @@ export class Engine {
     this.setPixelRatio(typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1)
     // load hi-score if present
     try {
-      const hi = localStorage.getItem('apeiron_hi')
+      const hi = localStorage.getItem('briarwake_hi')
       if (hi) this.highScore = Math.max(0, parseInt(hi, 10) || 0)
     } catch {}
     this.resetGame(true)
@@ -347,7 +347,7 @@ export class Engine {
           }
         }
 
-        // Psychedelic mushrooms (rainbow - triggers the original Apeiron
+        // Psychedelic mushrooms (rainbow - triggers the classic
         // ten-times score multiplier).
         if (usesPsychedelicMushrooms(this.level, this.settings.gameMode) && !mush.reflective) {
           if (this.rand() < PSYCHEDELIC.SPAWN_CHANCE) {
@@ -519,7 +519,7 @@ export class Engine {
       this.particles.playerTrail(this.player.x + this.player.w / 2, this.player.y + this.player.h)
     }
 
-    // Classic rule: player cannot move through mushrooms without Diamond yummy.
+    // Classic rule: player cannot move through mushrooms without Diamond bloom.
     if (!this.player.canPassThroughMushrooms()) {
       const pr = this.player.rect()
       const minC = Math.max(0, Math.floor(pr.x / CELL))
@@ -632,8 +632,8 @@ export class Engine {
       }
     }
 
-    // Update geckos
-    for (const sc of this.geckos) {
+    // Update skitters
+    for (const sc of this.skitters) {
       sc.update(dt)
     }
 
@@ -646,7 +646,7 @@ export class Engine {
       if (wasActive && !p.active) {
         sfx.raspberry()
         this.stats.yummiesMissed++
-        this.addPopup(FIELD_W / 2, FIELD_H - 40, 'MISSED YUMMY!')
+        this.addPopup(FIELD_W / 2, FIELD_H - 40, 'MISSED BLOOM!')
       }
 
       // Keep classic visuals subdued; enhanced mode gets stronger sparkle.
@@ -663,12 +663,12 @@ export class Engine {
       if (p.active && aabb(this.player.rect(), p.rect())) {
         p.active = false
         this.stats.yummiesCollected++
-        let popupText = `YUMMY! ${p.type.toUpperCase().replace('_', ' ')}`
+        let popupText = `BLOOM! ${p.type.toUpperCase().replace('_', ' ')}`
         if (p.type === 'extra_man') {
           if (this.lives < 8) {
             this.lives++
           }
-          popupText = 'YUMMY! EXTRA MAN'
+          popupText = 'BLOOM! EXTRA MAN'
           sfx.extra()
         } else if (p.type === 'house_cleaning') {
           const startRow = GRID.ROWS - GRID.PLAYER_ROWS
@@ -677,7 +677,7 @@ export class Engine {
               this.grid.set(c, r, null)
             }
           }
-          popupText = 'YUMMY! HOUSE CLEANING'
+          popupText = 'BLOOM! HOUSE CLEANING'
           sfx.extra()
         } else if (p.type === 'multiplier') {
           // This is a bonus award, not an enemy score: Enhanced level/combo
@@ -690,7 +690,7 @@ export class Engine {
           this.sidebarBonus = award.bonus
           this.recordScore(award.score)
           popupText =
-            award.bonus > 0 ? `YUMMY! BONUS ×${POWERUPS.BONUS_MULTIPLIER}` : 'YUMMY! NO BONUS YET'
+            award.bonus > 0 ? `BLOOM! BONUS ×${POWERUPS.BONUS_MULTIPLIER}` : 'BLOOM! NO BONUS YET'
           sfx.extra()
         } else {
           this.player.addPowerUp(p.type)
@@ -720,20 +720,20 @@ export class Engine {
     // Enemy spawn logic
     const modeTuning = getLevelTuning(this.level, this.settings.gameMode)
 
-    // Larry the Scobster (Spider)
-    const scobster = tickScobsterSpawn(
+    // Orrin the Weaver (Spider)
+    const weaver = tickWeaverSpawn(
       this.spiderTimer,
       dt,
       this.spiders.filter((s) => !s.dead).length,
       this.settings.gameMode
     )
-    this.spiderTimer = scobster.timer
-    if (scobster.spawn) {
+    this.spiderTimer = weaver.timer
+    if (weaver.spawn) {
       this.spiders.push(new Spider(this.level, this.rand, this.player.x + this.player.w / 2))
       this.spiderTimer = randRange(modeTuning.spiderMin, modeTuning.spiderMax, this.rand)
     }
 
-    // Groucho the Flick (Flea)
+    // Mizzle the Dripper (Flea)
     this.fleaCd -= dt
     if (this.fleaCd <= 0) {
       const watch = fleaWatchRows()
@@ -742,15 +742,15 @@ export class Engine {
       }
       this.fleaCd =
         this.settings.gameMode === 'classic'
-          ? ENEMIES.GROUCHO_THE_FLICK.SPAWN_COOLDOWN
-          : Math.max(1.1, ENEMIES.GROUCHO_THE_FLICK.SPAWN_COOLDOWN * 0.82)
+          ? ENEMIES.MIZZLE_THE_DRIPPER.SPAWN_COOLDOWN
+          : Math.max(1.1, ENEMIES.MIZZLE_THE_DRIPPER.SPAWN_COOLDOWN * 0.82)
     }
 
-    // Gordon the Gecko
-    this.geckoTimer -= dt
-    if (this.geckoTimer <= 0) {
-      this.geckos.push(new Gecko(this.rand))
-      this.geckoTimer = randRange(modeTuning.geckoMin, modeTuning.geckoMax, this.rand)
+    // Tamsin the Skitter
+    this.skitterTimer -= dt
+    if (this.skitterTimer <= 0) {
+      this.skitters.push(new Skitter(this.rand))
+      this.skitterTimer = randRange(modeTuning.skitterMin, modeTuning.skitterMax, this.rand)
     }
 
     // UFO
@@ -797,8 +797,8 @@ export class Engine {
       }
     }
 
-    // Gordon the Gecko poisons mushrooms it touches
-    for (const sc of this.geckos) {
+    // Tamsin the Skitter poisons mushrooms it touches
+    for (const sc of this.skitters) {
       const c = Math.floor(sc.x / GRID.CELL)
       const r = Math.floor(sc.y / GRID.CELL)
       const m = this.grid.get(c, r)
@@ -818,7 +818,7 @@ export class Engine {
     if (this.player.alive) {
       const pr = this.player.rect()
 
-      // Pentipede segments
+      // Thornworm segments
       for (const cent of this.centipedes) {
         for (const s of cent.segments) {
           if (aabb(pr, this.segRect(cent, s))) {
@@ -828,7 +828,7 @@ export class Engine {
         }
       }
 
-      // Larry the Scobster (Spider)
+      // Orrin the Weaver (Spider)
       for (const sp of this.spiders) {
         if (!sp.dead && aabb(pr, sp.rect())) {
           this.loseLife()
@@ -836,7 +836,7 @@ export class Engine {
         }
       }
 
-      // Groucho the Flick (Flea)
+      // Mizzle the Dripper (Flea)
       for (const f of this.fleas) {
         if (!f.dead && aabb(pr, f.rect())) {
           this.loseLife()
@@ -844,8 +844,8 @@ export class Engine {
         }
       }
 
-      // Gordon the Gecko
-      for (const sc of this.geckos) {
+      // Tamsin the Skitter
+      for (const sc of this.skitters) {
         if (!sc.dead && aabb(pr, sc.rect())) {
           this.loseLife()
           return
@@ -864,7 +864,7 @@ export class Engine {
     // cleanup
     this.spiders = this.spiders.filter((s) => !s.dead)
     this.fleas = this.fleas.filter((s) => !s.dead)
-    this.geckos = this.geckos.filter((s) => !s.dead)
+    this.skitters = this.skitters.filter((s) => !s.dead)
     this.ufos = this.ufos.filter((u) => !u.dead)
     if (this.fleas.length <= 1) this.fleaMultiplier = 1
     this.powerUps = this.powerUps.filter((p) => p.active)
@@ -918,8 +918,9 @@ export class Engine {
     for (const flea of this.fleas) {
       if (!flea.dead) targets.push({ x: flea.x + flea.w / 2, y: flea.y + flea.h / 2 })
     }
-    for (const gecko of this.geckos) {
-      if (!gecko.dead) targets.push({ x: gecko.x + gecko.w / 2, y: gecko.y + gecko.h / 2 })
+    for (const skitter of this.skitters) {
+      if (!skitter.dead)
+        targets.push({ x: skitter.x + skitter.w / 2, y: skitter.y + skitter.h / 2 })
     }
     for (const ufo of this.ufos) {
       if (!ufo.dead) targets.push({ x: ufo.x + ufo.w / 2, y: ufo.y + ufo.h / 2 })
@@ -1038,11 +1039,11 @@ export class Engine {
       }
     }
 
-    for (const sc of this.geckos) {
+    for (const sc of this.skitters) {
       if (!sc.dead && aabb(blastRect, sc.rect())) {
         sc.dead = true
-        this.addScore(ENEMIES.GORDON_THE_GECKO.SCORE)
-        this.addPopup(sc.x + sc.w / 2, sc.y + sc.h / 2, String(ENEMIES.GORDON_THE_GECKO.SCORE))
+        this.addScore(ENEMIES.TAMSIN_THE_SKITTER.SCORE)
+        this.addPopup(sc.x + sc.w / 2, sc.y + sc.h / 2, String(ENEMIES.TAMSIN_THE_SKITTER.SCORE))
         this.particles.enemyExplosion(sc.x + sc.w / 2, sc.y + sc.h / 2)
         this.maybeDropPowerUp(sc.x + sc.w / 2, sc.y + sc.h / 2)
         hitCount++
@@ -1064,12 +1065,12 @@ export class Engine {
   }
 
   private handleRegularBullet(b: Bullet): boolean {
-    // Yummy coins can be accidentally knocked out of play by a shot.
+    // Bloom coins can be accidentally knocked out of play by a shot.
     for (const powerUp of this.powerUps) {
       if (!powerUp.active || !aabb(b.rect(), powerUp.rect())) continue
       b.active = false
       powerUp.deflect()
-      this.addPopup(powerUp.x + powerUp.w / 2, powerUp.y + powerUp.h / 2, 'YUMMY BOUNCED!')
+      this.addPopup(powerUp.x + powerUp.w / 2, powerUp.y + powerUp.h / 2, 'BLOOM BOUNCED!')
       sfx.hit()
       return true
     }
@@ -1140,7 +1141,7 @@ export class Engine {
         if (mush.hp <= 0) {
           this.grid.set(mc, mr, null)
           this.addScore(SCORE.MUSHROOM_CLEAR_BONUS)
-          // Yummy coins come out of destroyed mushrooms, as in the 1995 game.
+          // Bloom coins come out of destroyed mushrooms, as in the reference game.
           if (this.rand() < POWERUPS.MUSHROOM_DROP_CHANCE) {
             this.spawnPowerUp(mush.x + CELL / 2, mush.y + CELL / 2)
           }
@@ -1225,7 +1226,7 @@ export class Engine {
           if (!this.grid.get(s.c, s.r)) this.grid.set(s.c, s.r, new Mushroom(s.c, s.r))
           const killedHead = si === 0
           const pts = killedHead ? SCORE.HEAD : SCORE.SEGMENT
-          this.stats.kills.pentipede++
+          this.stats.kills.thornworm++
           this.addScore(pts)
           this.addPopup(s.c * CELL + CELL / 2, s.r * CELL + CELL / 2, String(pts))
           sfx.hit()
@@ -1264,7 +1265,7 @@ export class Engine {
         this.addScore(pts)
         this.addPopup(sp.x + sp.w / 2, sp.y + sp.h / 2, String(pts))
         sfx.spider()
-        this.stats.kills.scobster++
+        this.stats.kills.weaver++
         this.particles.emitExplosion(
           sp.x + sp.w / 2,
           sp.y + sp.h / 2,
@@ -1291,7 +1292,7 @@ export class Engine {
         this.addScore(pts)
         this.addPopup(f.x + f.w / 2, f.y + f.h / 2, String(pts))
         sfx.flea()
-        this.stats.kills.flick++
+        this.stats.kills.dripper++
         this.particles.emitExplosion(
           f.x + f.w / 2,
           f.y + f.h / 2,
@@ -1303,15 +1304,15 @@ export class Engine {
       }
     }
 
-    // gecko
-    for (const sc of this.geckos) {
+    // skitter
+    for (const sc of this.skitters) {
       if (!sc.dead && aabb(b.rect(), sc.rect())) {
         sc.dead = true
         b.active = false
-        this.addScore(ENEMIES.GORDON_THE_GECKO.SCORE)
-        this.addPopup(sc.x + sc.w / 2, sc.y + sc.h / 2, String(ENEMIES.GORDON_THE_GECKO.SCORE))
-        sfx.gecko()
-        this.stats.kills.gecko++
+        this.addScore(ENEMIES.TAMSIN_THE_SKITTER.SCORE)
+        this.addPopup(sc.x + sc.w / 2, sc.y + sc.h / 2, String(ENEMIES.TAMSIN_THE_SKITTER.SCORE))
+        sfx.skitter()
+        this.stats.kills.skitter++
         this.particles.emitExplosion(
           sc.x + sc.w / 2,
           sc.y + sc.h / 2,
@@ -1350,7 +1351,7 @@ export class Engine {
   private spiderScore(sp: Spider): number {
     // The source describes score by proximity, so use the actual distance
     // between sprite centers rather than only their vertical separation.
-    return getScobsterScore(getScobsterDistance(this.player.rect(), sp.rect()))
+    return getWeaverScore(getWeaverDistance(this.player.rect(), sp.rect()))
   }
 
   private handleTouchdowns(count: number) {
@@ -1371,8 +1372,8 @@ export class Engine {
         this.spiders.push(new Spider(this.level, this.rand, this.player.x + this.player.w / 2))
       } else if (roll < 0.8 && this.fleas.length < 3) {
         this.fleas.push(new Flea(this.rand))
-      } else if (this.geckos.length < 2) {
-        this.geckos.push(new Gecko(this.rand))
+      } else if (this.skitters.length < 2) {
+        this.skitters.push(new Skitter(this.rand))
       }
       this.touchdownFriendCd = touchdownRules.friendCooldown
     }
@@ -1422,11 +1423,11 @@ export class Engine {
       return
     }
 
-    // Clear everything that could be sitting on the spawn point. The Pentipede
+    // Clear everything that could be sitting on the spawn point. The Thornworm
     // stays where it is; the invulnerable window covers it.
     this.spiders.length = 0
     this.fleas.length = 0
-    this.geckos.length = 0
+    this.skitters.length = 0
     this.ufos.length = 0
     this.fallingMushrooms.length = 0
     this.reflectedBullets.length = 0
@@ -1499,7 +1500,7 @@ export class Engine {
     if (!this.cheated && this.score > this.highScore) {
       this.highScore = this.score
       try {
-        localStorage.setItem('apeiron_hi', String(this.highScore))
+        localStorage.setItem('briarwake_hi', String(this.highScore))
       } catch {}
     }
     while (this.score >= this.nextExtraLife) {
@@ -1614,7 +1615,7 @@ export class Engine {
     }
     this.spiders.length = 0
     this.fleas.length = 0
-    this.geckos.length = 0
+    this.skitters.length = 0
     this.ufos.length = 0
     this.fallingMushrooms.length = 0
     this.reflectedBullets.length = 0
@@ -1622,7 +1623,7 @@ export class Engine {
     this.touchdownFriendCd = 0
 
     this.spiderTimer = randRange(tuning.spiderMin, tuning.spiderMax, this.rand)
-    this.geckoTimer = randRange(tuning.geckoMin, tuning.geckoMax, this.rand)
+    this.skitterTimer = randRange(tuning.skitterMin, tuning.skitterMax, this.rand)
     this.fleaCd =
       this.settings.gameMode === 'classic'
         ? TIMERS.SPAWN_FLEA_COOLDOWN
@@ -1636,10 +1637,10 @@ export class Engine {
       return
     }
 
-    // Random Yummy type
+    // Random Bloom type
     const type = YUMMIES.TYPES[Math.floor(this.rand() * YUMMIES.TYPES.length)]
 
-    // Create new Yummy
+    // Create new Bloom
     this.powerUps.push(new PowerUp(x - GRID.CELL / 2, y - GRID.CELL / 2, type, this.rand))
 
     if (!this.isClassicMode()) {
@@ -1661,7 +1662,7 @@ export class Engine {
       this.spawnPowerUp(x, y)
     }
     // Bonus score coins/frenzies are an Enhanced addition. The original
-    // Yummy coins use the PowerUp path above in both modes.
+    // Bloom coins use the PowerUp path above in both modes.
     if (spawnsCoins(this.settings.gameMode)) {
       this.maybeDropCoin(x, y)
     }
@@ -1745,7 +1746,7 @@ export class Engine {
     this.particles.clear()
     if (!keepHi) {
       try {
-        const hi = localStorage.getItem('apeiron_hi')
+        const hi = localStorage.getItem('briarwake_hi')
         if (hi) this.highScore = Math.max(this.highScore, parseInt(hi, 10) || 0)
       } catch {}
     }
@@ -1759,7 +1760,7 @@ export class Engine {
     this.centipedes = []
     this.spiders = []
     this.fleas = []
-    this.geckos = []
+    this.skitters = []
     this.ufos = []
     this.powerUps = []
     this.fallingMushrooms = []
@@ -1772,7 +1773,7 @@ export class Engine {
     this.coinFrenzyTimer = 0
     this.spiderTimer = randRange(TIMERS.SPAWN_SPIDER_MIN, TIMERS.SPAWN_SPIDER_MAX, this.rand)
     this.fleaCd = TIMERS.SPAWN_FLEA_COOLDOWN
-    this.geckoTimer = randRange(TIMERS.SPAWN_GECKO_MIN, TIMERS.SPAWN_GECKO_MAX, this.rand)
+    this.skitterTimer = randRange(TIMERS.SPAWN_SKITTER_MIN, TIMERS.SPAWN_SKITTER_MAX, this.rand)
     this.startLevel()
   }
 
@@ -1874,24 +1875,23 @@ export class Engine {
 
     // enemies
     for (const sp of this.spiders) {
-      const frame = Math.floor(this.tGlobal * 12) % FRAMES.scobster
-      if (atlas && drawTile(g, atlas, `scobster:${frame}`, sp.x + sp.w / 2, sp.y + sp.h / 2))
-        continue
+      const frame = Math.floor(this.tGlobal * 12) % FRAMES.weaver
+      if (atlas && drawTile(g, atlas, `weaver:${frame}`, sp.x + sp.w / 2, sp.y + sp.h / 2)) continue
       drawSpider(g, sp.x, sp.y, sp.w, sp.h)
     }
     for (const f of this.fleas) {
-      const frame = Math.floor(this.tGlobal * 14) % FRAMES.flick
-      if (atlas && drawTile(g, atlas, `flick:${frame}`, f.x + f.w / 2, f.y + f.h / 2)) continue
+      const frame = Math.floor(this.tGlobal * 14) % FRAMES.dripper
+      if (atlas && drawTile(g, atlas, `dripper:${frame}`, f.x + f.w / 2, f.y + f.h / 2)) continue
       drawFlea(g, f.x, f.y, f.w, f.h)
     }
-    for (const sc of this.geckos) {
-      const frame = Math.floor(this.tGlobal * 12) % FRAMES.gecko
+    for (const sc of this.skitters) {
+      const frame = Math.floor(this.tGlobal * 12) % FRAMES.skitter
       if (
         atlas &&
-        drawTile(g, atlas, `gecko:${frame}`, sc.x + sc.w / 2, sc.y + sc.h / 2, 1, sc.vx < 0)
+        drawTile(g, atlas, `skitter:${frame}`, sc.x + sc.w / 2, sc.y + sc.h / 2, 1, sc.vx < 0)
       )
         continue
-      drawGecko(g, sc.x, sc.y, sc.w, sc.h)
+      drawSkitter(g, sc.x, sc.y, sc.w, sc.h)
     }
     for (const ufo of this.ufos) {
       if (ufo.dead) continue
@@ -2136,7 +2136,7 @@ export class Engine {
           g.strokeRect(r.x, r.y, r.w, r.h)
         }
 
-        for (const sc of this.geckos) {
+        for (const sc of this.skitters) {
           if (sc.dead) continue
           const r = sc.rect()
           g.strokeRect(r.x, r.y, r.w, r.h)
@@ -2184,7 +2184,7 @@ export class Engine {
     return this.settings.gameMode === 'classic' ? 'classic' : 'x'
   }
 
-  // The 1995 wave counter has two digits and wraps after 99.
+  // The reference wave counter has two digits and wraps after 99.
   private displayWave(): number {
     return ((Math.max(1, this.level) - 1) % 99) + 1
   }
@@ -2294,7 +2294,7 @@ export class Engine {
       // A menu panel owns the keyboard while it is open.
       if (this.uiBlocked) return
 
-      // Paused: letters spell cheat words, as in the 1995 game.
+      // Paused: letters spell cheat words, as in the reference game.
       if (this.mode === 'pause' && /^Key[A-Z]$/.test(e.code) && !e.metaKey && !e.ctrlKey) {
         const letter = e.code.slice(3)
         const typingCheat =

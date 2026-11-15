@@ -1,4 +1,4 @@
-// Sparticles integration for Apeiron game
+// Sparticles integration for Briarwake game
 // Provides configurable particle effects with game-appropriate settings
 
 import Sparticles from 'sparticles'

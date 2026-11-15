@@ -6,9 +6,9 @@ import type { PowerUpType } from '../../game/Player'
 import { PowerUp } from '../../game/PowerUp'
 import {
   drawFlea,
-  drawGecko,
   drawMushroom,
   drawSegment,
+  drawSkitter,
   drawSpider,
   drawUFO,
   type VisualProfile,
@@ -74,7 +74,7 @@ function Keys({ rows }: { rows: [string, string][] }) {
   )
 }
 
-const YUMMY_TEXT: Record<PowerUpType, [string, string]> = {
+const BLOOM_TEXT: Record<PowerUpType, [string, string]> = {
   guided: ['Guided Shot', 'Your shots curve toward the nearest target.'],
   diamond: ['Diamond', 'Move straight through mushrooms.'],
   machine_gun: ['Machine Gun', 'Rapid fire, several shots on screen at once.'],
@@ -85,7 +85,7 @@ const YUMMY_TEXT: Record<PowerUpType, [string, string]> = {
   multiplier: ['Multiplier', `Multiplies the Bonus counter by ${POWERUPS.BONUS_MULTIPLIER}.`],
 }
 
-function YummyIcon({ type, profile }: { type: PowerUpType; profile: VisualProfile }) {
+function BloomIcon({ type, profile }: { type: PowerUpType; profile: VisualProfile }) {
   const draw = useCallback(
     (g: CanvasRenderingContext2D) => {
       const coin = new PowerUp(4, 4, type, () => 0)
@@ -102,7 +102,7 @@ function YummyIcon({ type, profile }: { type: PowerUpType; profile: VisualProfil
       size={20}
       zoom={2.2}
       background={fieldColor(profile)}
-      label={YUMMY_TEXT[type][0]}
+      label={BLOOM_TEXT[type][0]}
     />
   )
 }
@@ -111,7 +111,7 @@ export function HowToPlayPanel({ profile, onClose }: InfoProps) {
   return (
     <Panel title="HOW TO PLAY" onClose={onClose}>
       <p style={{ margin: '0 0 4px' }}>
-        You are a crystal in a mushroom patch. Shoot every segment of the Pentipede to clear the
+        You are a crystal in a mushroom patch. Shoot every segment of the Thornworm to clear the
         wave. Each segment you hit leaves a mushroom behind.
       </p>
 
@@ -136,10 +136,10 @@ export function HowToPlayPanel({ profile, onClose }: InfoProps) {
         {POWERUPS.TYPES.map((type) => (
           <Row
             key={type}
-            icon={<YummyIcon type={type} profile={profile} />}
-            name={YUMMY_TEXT[type][0]}
+            icon={<BloomIcon type={type} profile={profile} />}
+            name={BLOOM_TEXT[type][0]}
           >
-            {YUMMY_TEXT[type][1]}
+            {BLOOM_TEXT[type][1]}
           </Row>
         ))}
       </div>
@@ -163,8 +163,8 @@ export function HowToPlayPanel({ profile, onClose }: InfoProps) {
       <SectionTitle>MODES</SectionTitle>
       <Keys
         rows={[
-          ['Apeiron', 'Classic rules, scoring and pacing'],
-          ['Apeiron X', 'Combos, wave bonuses, coin frenzies and faster enemies'],
+          ['Briarwake', 'Classic rules, scoring and pacing'],
+          ['Enhanced', 'Combos, wave bonuses, coin frenzies and faster enemies'],
         ]}
       />
       <p style={{ color: COLORS.dim, margin: '10px 0 0' }}>
@@ -188,19 +188,19 @@ export function VerminPanel({ profile, onClose }: InfoProps) {
     },
     [profile]
   )
-  const larry = useCallback(
+  const orrin = useCallback(
     (g: CanvasRenderingContext2D) =>
-      sprite(g, 'scobster:1', 15, 15, () => drawSpider(g, 4, 6, CELL * 1.4, CELL * 1.15)),
+      sprite(g, 'weaver:1', 15, 15, () => drawSpider(g, 4, 6, CELL * 1.4, CELL * 1.15)),
     []
   )
-  const groucho = useCallback(
+  const mizzle = useCallback(
     (g: CanvasRenderingContext2D) =>
-      sprite(g, 'flick:0', 15, 14, () => drawFlea(g, 5, 5, CELL * 1.25, CELL * 1.25)),
+      sprite(g, 'dripper:0', 15, 14, () => drawFlea(g, 5, 5, CELL * 1.25, CELL * 1.25)),
     []
   )
-  const gordon = useCallback(
+  const tamsin = useCallback(
     (g: CanvasRenderingContext2D) =>
-      sprite(g, 'gecko:1', 16, 15, () => drawGecko(g, 3, 6, CELL * 1.5, CELL * 1.1)),
+      sprite(g, 'skitter:1', 16, 15, () => drawSkitter(g, 3, 6, CELL * 1.5, CELL * 1.1)),
     []
   )
   const ufo = useCallback(
@@ -232,41 +232,41 @@ export function VerminPanel({ profile, onClose }: InfoProps) {
     <Panel title="MEET THE VERMIN" onClose={onClose}>
       <SectionTitle>THE CAST</SectionTitle>
       <Row
-        icon={<SpriteIcon size={30} zoom={2} draw={head} background={bg} label="Pentipede head" />}
-        name={`Cheech the Pentipede: head ${SCORE.HEAD}`}
+        icon={<SpriteIcon size={30} zoom={2} draw={head} background={bg} label="Thornworm head" />}
+        name={`Wick the Thornworm: head ${SCORE.HEAD}`}
       >
         Marches down the field, turning at every mushroom and wall. Shoot any segment and the chain
         splits, each piece with a new head.
       </Row>
       <Row
-        icon={<SpriteIcon size={30} zoom={2} draw={body} background={bg} label="Pentipede body" />}
+        icon={<SpriteIcon size={30} zoom={2} draw={body} background={bg} label="Thornworm body" />}
         name={`Body segment: ${SCORE.SEGMENT}`}
       >
         If he reaches the bottom row he calls in his friends. Clear every segment to end the wave.
       </Row>
       <Row
         icon={
-          <SpriteIcon size={30} zoom={2} draw={larry} background={bg} label="Larry the Scobster" />
+          <SpriteIcon size={30} zoom={2} draw={orrin} background={bg} label="Orrin the Weaver" />
         }
-        name={`Larry the Scobster: up to ${SCORE.SCOBSTER_NEAR.toLocaleString()}`}
+        name={`Orrin the Weaver: up to ${SCORE.WEAVER_NEAR.toLocaleString()}`}
       >
         Scuttles through your zone trying to run you down. The closer he is when you hit him, the
         more he is worth.
       </Row>
       <Row
         icon={
-          <SpriteIcon size={30} zoom={2} draw={groucho} background={bg} label="Groucho the Flick" />
+          <SpriteIcon size={30} zoom={2} draw={mizzle} background={bg} label="Mizzle the Dripper" />
         }
-        name={`Groucho the Flick: ${SCORE.FLEA}`}
+        name={`Mizzle the Dripper: ${SCORE.FLEA}`}
       >
         Drops straight down when your zone runs low on mushrooms, planting new ones as he falls.
         Each one shot while several are falling is worth double the last.
       </Row>
       <Row
         icon={
-          <SpriteIcon size={30} zoom={2} draw={gordon} background={bg} label="Gordon the Gecko" />
+          <SpriteIcon size={30} zoom={2} draw={tamsin} background={bg} label="Tamsin the Skitter" />
         }
-        name={`Gordon the Gecko: ${SCORE.GECKO.toLocaleString()}`}
+        name={`Tamsin the Skitter: ${SCORE.SKITTER.toLocaleString()}`}
       >
         Crosses the field and poisons every mushroom he touches.
       </Row>
@@ -283,7 +283,7 @@ export function VerminPanel({ profile, onClose }: InfoProps) {
           icon={<SpriteIcon size={30} zoom={2} draw={shroom} background={bg} label="Mushroom" />}
           name={`Mushroom: ${SCORE.MUSHROOM_HIT} a hit`}
         >
-          Four hits to clear. May hide a Yummy.
+          Four hits to clear. May hide a Bloom.
         </Row>
         <Row
           icon={
@@ -297,7 +297,7 @@ export function VerminPanel({ profile, onClose }: InfoProps) {
           }
           name={`Poisoned: ${SCORE.POISON_MUSHROOM_HIT} a hit`}
         >
-          Sends the Pentipede diving straight at you.
+          Sends the Thornworm diving straight at you.
         </Row>
         <Row
           icon={
@@ -362,7 +362,7 @@ export function ScoresPanel({ scores, onClose }: { scores: ScoreEntry[]; onClose
                 <td style={cell}>{s.score.toLocaleString()}</td>
                 <td style={cell}>{s.wave}</td>
                 <td style={{ ...cell, textAlign: 'left' }}>
-                  {s.mode === 'classic' ? 'Apeiron' : 'Apeiron X'}
+                  {s.mode === 'classic' ? 'Briarwake' : 'Enhanced'}
                   {s.daily ? ' (daily)' : ''}
                 </td>
                 <td style={{ ...cell, textAlign: 'left' }}>{s.date}</td>
@@ -384,21 +384,19 @@ export function ScoresPanel({ scores, onClose }: { scores: ScoreEntry[]; onClose
 export function AboutPanel({ onClose }: { onClose: () => void }) {
   return (
     <Panel title="ABOUT" onClose={onClose}>
-      <SectionTitle>THE ORIGINAL</SectionTitle>
+      <SectionTitle>THE GAME</SectionTitle>
       <p>
-        Apeiron was released as shareware for the Macintosh by Ambrosia Software in February 1995.
-        It was designed by Andrew Welch as Ambrosia's loud, strange take on the arcade game
-        Centipede. A Mac OS X version, Apeiron X, followed in November 2004.
+        Briarwake is an original arcade shooter by Liz Stein. A thornworm winds down through a
+        bramble patch while you shoot from the bottom of the screen.
       </p>
-      <SectionTitle>THIS REMAKE</SectionTitle>
+      <SectionTitle>HOW IT IS MADE</SectionTitle>
       <p>
-        An unofficial fan tribute, not affiliated with or endorsed by Ambrosia Software. It uses
-        none of the original game's files: every sprite, backdrop and sound here is generated in
-        code when the page loads.
+        Every sprite, backdrop and sound is generated in code when the page loads. There are no
+        image or audio files.
       </p>
       <p>
-        The Apeiron mode follows the original's rules as closely as its manual, reviews and gameplay
-        footage allow. Where those do not give a number, the value is this remake's own tuning.
+        Classic mode is the plain rule set; Enhanced adds busier enemies and extra bonuses. All
+        speeds, scores and timings are this game's own tuning.
       </p>
       <SectionTitle>DAILY CHALLENGE</SectionTitle>
       <p>

@@ -24,9 +24,9 @@ const palette = {
   fleaDark: '#1f2840',
   fleaMid: '#3f5a87',
   fleaHi: '#9dc0eb',
-  geckoDark: '#463344',
-  geckoMid: '#76546f',
-  geckoHi: '#c27f70',
+  skitterDark: '#463344',
+  skitterMid: '#76546f',
+  skitterHi: '#c27f70',
   ufoDark: '#2f3a3a',
   ufoMid: '#58726b',
   ufoHi: '#c0d9c7',
@@ -274,7 +274,7 @@ export function drawSegment(
   g.ellipse(cx, py + 13.65, 5.9, 1.6, 0, 0, Math.PI * 2)
   g.fill()
 
-  // Little feet/sneakers for each segment (Cheech wears sneakers!)
+  // Little feet/sneakers for each segment (Wick wears sneakers!)
   g.fillStyle = '#1a1a1a'
   g.beginPath()
   g.ellipse(cx - 3.5 + footL, py + 12.5 - liftL, 1.8, 1.0, 0.2, 0, Math.PI * 2)
@@ -313,7 +313,7 @@ export function drawSegment(
   g.stroke()
 
   if (head) {
-    // CHEECH'S FACE - big expressive eyes and smile!
+    // WICK'S FACE - big expressive eyes and smile!
 
     // Antennae
     g.strokeStyle = bodyDark
@@ -362,7 +362,7 @@ export function drawSegment(
     g.arc(cx, cy + 1.5, 2.2, 0.2, Math.PI - 0.2)
     g.stroke()
 
-    // Bow tie (Cheech's signature accessory)
+    // Bow tie (Wick's signature accessory)
     g.fillStyle = '#cc2222'
     g.beginPath()
     g.moveTo(cx - 2.5, cy + 3.5)
@@ -388,7 +388,7 @@ export function drawSpider(
   w: number,
   h: number
 ) {
-  // LARRY THE SCOBSTER - a cantankerous gecko-lobster hybrid!
+  // ORRIN THE WEAVER - a cantankerous skitter-lobster hybrid!
   const px = snap(x)
   const py = snap(y)
   const cx = px + w * 0.5
@@ -412,7 +412,7 @@ export function drawSpider(
     g.stroke()
   }
 
-  // LOBSTER CLAWS - Larry's signature feature!
+  // LOBSTER CLAWS - Orrin's signature feature!
   // Left claw
   g.fillStyle = '#8b4513'
   g.beginPath()
@@ -449,7 +449,7 @@ export function drawSpider(
   g.lineTo(cx + 13, cy + 2)
   g.stroke()
 
-  // Main body (gecko-like segmented)
+  // Main body (skitter-like segmented)
   g.fillStyle = radial(g, cx - 1, cy - 1.5, 0.8, 8, '#9fd37f', '#39593a')
   g.beginPath()
   g.ellipse(cx, cy, 6.5, 4, 0, 0, Math.PI * 2)
@@ -501,7 +501,7 @@ export function drawSpider(
   g.lineTo(cx + 1, cy - 1.2)
   g.stroke()
 
-  // Small gecko tail hint
+  // Small skitter tail hint
   g.strokeStyle = '#39593a'
   g.lineWidth = 2
   g.beginPath()
@@ -515,7 +515,7 @@ export function drawSpider(
 }
 
 export function drawFlea(g: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
-  // GROUCHO THE FLICK - a flea-tick creature that laughs as he falls!
+  // MIZZLE THE DRIPPER - a flea-tick creature that laughs as he falls!
   const px = snap(x)
   const py = snap(y)
   const cx = px + w * 0.5
@@ -584,7 +584,7 @@ export function drawFlea(g: CanvasRenderingContext2D, x: number, y: number, w: n
   g.strokeStyle = '#1a3858'
   g.stroke()
 
-  // Groucho's mischievous eyes
+  // Mizzle's mischievous eyes
   g.fillStyle = '#ffffff'
   g.beginPath()
   g.ellipse(cx - 1, cy - 5, 0.9, 0.7, 0, 0, Math.PI * 2)
@@ -596,7 +596,7 @@ export function drawFlea(g: CanvasRenderingContext2D, x: number, y: number, w: n
   g.ellipse(cx + 1, cy - 5, 0.35, 0.3, 0, 0, Math.PI * 2)
   g.fill()
 
-  // Groucho's grin (he's laughing as he falls!)
+  // Mizzle's grin (he's laughing as he falls!)
   g.strokeStyle = '#0a0a0a'
   g.lineWidth = 0.6
   g.beginPath()
@@ -735,8 +735,14 @@ export function drawUFO(g: CanvasRenderingContext2D, x: number, y: number, w: nu
   g.fill()
 }
 
-export function drawGecko(g: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
-  // GORDON THE GECKO - his B.O. is literally poison!
+export function drawSkitter(
+  g: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number
+) {
+  // TAMSIN THE SKITTER - his B.O. is literally poison!
   const px = snap(x)
   const py = snap(y)
   const cx = px + w * 0.5
@@ -766,7 +772,7 @@ export function drawGecko(g: CanvasRenderingContext2D, x: number, y: number, w: 
   g.ellipse(cx, py + h - 1, 6, 1.5, 0, 0, Math.PI * 2)
   g.fill()
 
-  // Four gecko legs
+  // Four skitter legs
   g.strokeStyle = '#5a6a40'
   g.lineWidth = 1.5
   // Front legs
@@ -784,7 +790,7 @@ export function drawGecko(g: CanvasRenderingContext2D, x: number, y: number, w: 
   g.quadraticCurveTo(px + w + 1, cy + 4, px + w + 2, cy + 5)
   g.stroke()
 
-  // Gecko toe pads
+  // Skitter toe pads
   g.fillStyle = '#8aa060'
   g.beginPath()
   g.arc(px - 3, cy + 3, 1.5, 0, Math.PI * 2)
@@ -806,7 +812,7 @@ export function drawGecko(g: CanvasRenderingContext2D, x: number, y: number, w: 
   g.quadraticCurveTo(px + w + 10, cy + 2, px + w + 11, cy)
   g.stroke()
 
-  // Main body (gecko-shaped)
+  // Main body (skitter-shaped)
   g.fillStyle = radial(g, cx - 2, cy - 2, 1, 10, '#b8d888', '#6a8a50')
   g.beginPath()
   g.ellipse(cx, cy, 6, 3.5, 0, 0, Math.PI * 2)
@@ -816,7 +822,7 @@ export function drawGecko(g: CanvasRenderingContext2D, x: number, y: number, w: 
   g.lineWidth = 1
   g.stroke()
 
-  // Gecko pattern spots
+  // Skitter pattern spots
   g.fillStyle = 'rgba(90, 120, 60, 0.5)'
   g.beginPath()
   g.ellipse(cx - 2, cy - 1, 1.5, 1, 0.3, 0, Math.PI * 2)
@@ -838,7 +844,7 @@ export function drawGecko(g: CanvasRenderingContext2D, x: number, y: number, w: 
   g.strokeStyle = '#4a6a30'
   g.stroke()
 
-  // Big gecko eyes (on sides of head)
+  // Big skitter eyes (on sides of head)
   g.fillStyle = '#ffff00'
   g.beginPath()
   g.ellipse(px + 2, cy - 1.5, 1.5, 1.2, 0, 0, Math.PI * 2)

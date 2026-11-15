@@ -1,18 +1,18 @@
 import { describe, expect, it } from 'vitest'
 import { CELL } from '../src/game/Constants'
-import { Gecko } from '../src/game/Enemies'
+import { Skitter } from '../src/game/Enemies'
 import { Grid, Mushroom } from '../src/game/Grid'
 
-// This is a lightweight behavioral check: when a gecko passes over an existing
+// This is a lightweight behavioral check: when a skitter passes over an existing
 // mushroom cell, it should be poisoned by the engine loop. Here we just simulate
 // the spatial overlap and confirm the flag flip.
 
-describe('Gecko poisons mushrooms it touches', () => {
+describe('Skitter poisons mushrooms it touches', () => {
   it('marks mush as poisoned on contact position', () => {
     const g = new Grid(40, 50)
     const m = new Mushroom(10, 6)
     g.set(10, 6, m)
-    const sc = new Gecko(() => 0.0)
+    const sc = new Skitter(() => 0.0)
     ;(sc as any).x = 10 * CELL
     ;(sc as any).y = 6 * CELL
     // emulate Engine tick snippet

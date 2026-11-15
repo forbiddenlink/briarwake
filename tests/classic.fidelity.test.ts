@@ -15,7 +15,7 @@ describe('Classic mode fidelity', () => {
     expect(spawnsCoins('enhanced')).toBe(true)
   })
 
-  it('uses Apeiron psychedelic mushrooms in both modes from their configured wave', () => {
+  it('uses Briarwake psychedelic mushrooms in both modes from their configured wave', () => {
     for (const mode of ['classic', 'enhanced'] as const) {
       expect(usesPsychedelicMushrooms(PSYCHEDELIC.START_WAVE - 1, mode)).toBe(false)
       expect(usesPsychedelicMushrooms(PSYCHEDELIC.START_WAVE, mode)).toBe(true)

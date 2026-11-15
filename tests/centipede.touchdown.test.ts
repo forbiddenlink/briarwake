@@ -7,7 +7,7 @@ function stepOnce(centipede: Centipede, grid: Grid) {
   ;(centipede as any).step(grid)
 }
 
-// Canon Apeiron/Centipede: the centipede descends into the player zone and, once it
+// Classic rule: the centipede descends into the player zone and, once it
 // reaches the bottom row, weaves inside the bottom band (reversing vertical direction)
 // until it is killed. It does NOT teleport back to the top. Every bottom-touch still
 // raises the touchdown signal so the engine can apply reinforcement pressure.

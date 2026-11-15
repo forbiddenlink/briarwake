@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { CLASSIC_BONUS, POWERUPS } from '../src/game/Constants'
 import { getBonusMultiplierAward, tickClassicBonus } from '../src/game/Engine'
 
-// Observed in original 1995 Apeiron footage (youtube.com/watch?v=irQzOwsLlok):
+// Observed in reference footage (youtube.com/watch?v=irQzOwsLlok):
 // Bonus reads 1960 at 0:01.6 of wave 1 and 1970 just after wave 2 starts, then
 // falls in steps of 10 (1310 -> 1270 over 1.6s). Picking up a Multiplier at
 // 0:27-0:29 took Bonus from ~1240 to 3710 while Score only moved 1056 -> 1139.
@@ -31,8 +31,8 @@ describe('Classic Bonus countdown', () => {
   })
 })
 
-describe('Classic Multiplier Yummy', () => {
-  it('triples the Bonus, as observed in the original', () => {
+describe('Classic Multiplier Bloom', () => {
+  it('triples the Bonus, as observed', () => {
     expect(POWERUPS.BONUS_MULTIPLIER).toBe(3)
     expect(getBonusMultiplierAward(1240, 1, false).bonus).toBe(3720)
   })

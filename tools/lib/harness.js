@@ -1,5 +1,5 @@
 /**
- * Shared Playwright boot for the Apeiron headless harness.
+ * Shared Playwright boot for the Briarwake headless harness.
  *
  * Every entry point (capture / baseline / profile / playtest) gets a FRESH
  * browser context so no particle age, decal buffer, or localStorage state
@@ -8,7 +8,7 @@
 import { chromium } from 'playwright'
 import { installDeterminism, installProfiler } from './determinism.js'
 
-export const DEFAULT_URL = process.env.APEIRON_URL || 'http://localhost:4173/'
+export const DEFAULT_URL = process.env.BRIARWAKE_URL || 'http://localhost:4173/'
 
 /**
  * Launch a deterministic, isolated page pointed at the running app.
@@ -45,7 +45,7 @@ export async function bootPage(opts = {}) {
 
   await page.goto(url, { waitUntil: 'domcontentloaded' })
   // Wait until the engine mounts and exposes its test handle.
-  await page.waitForFunction(() => !!window.__apeironEngine, null, { timeout: 15000 })
+  await page.waitForFunction(() => !!window.__briarwakeEngine, null, { timeout: 15000 })
 
   return {
     browser,
@@ -63,20 +63,20 @@ export async function bootPage(opts = {}) {
 /** Start a fresh run (leaves title -> playing) then let it settle one frame. */
 export async function startRun(page) {
   await page.evaluate(() => {
-    const e = window.__apeironEngine
+    const e = window.__briarwakeEngine
     e.startNewGame()
   })
 }
 
 /** Advance exactly `frames` deterministic fixed steps. */
 export async function pump(page, frames) {
-  await page.evaluate((n) => window.__apeironPump(n), frames)
+  await page.evaluate((n) => window.__briarwakePump(n), frames)
 }
 
 /** Read a snapshot of engine gameplay state for assertions. */
 export async function readState(page) {
   return page.evaluate(() => {
-    const e = window.__apeironEngine
+    const e = window.__briarwakeEngine
     return {
       mode: e.mode,
       score: e.score,
