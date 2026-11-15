@@ -1,11 +1,11 @@
-# apeiron-remake
+# briarwake
 
 Briarwake is an original arcade shooter built with React + Vite. All
 assets are procedural: no image or audio files - sprites come from
 `ProceduralSprites`, audio from `AudioSynth`/`Music`. Deterministic fixed-timestep
 engine (`Engine.tick(dt)` at a fixed 1/60 step) so a seeded run renders bit-identical
 pixels, which backs a real pixel-diff regression gate. Repo:
-github.com/forbiddenlink/apeiron-remake.
+github.com/forbiddenlink/briarwake (the repo's former name was apeiron-remake; the live deployment still uses that name).
 
 See `ARCHITECTURE.md` for the full design-invariant contract and subsystem ownership
 table (frozen destination doc: code wins on disagreement, doc gets flagged not
