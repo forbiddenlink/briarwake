@@ -3,13 +3,17 @@ name: Dependabot auto-merge
 # then squash-merges patch + minor dependabot PRs. Major updates stay manual.
 # No branch protection required (you keep direct push to main). No third-party app.
 # Deadlock-free: polls the ci.yml run specifically, not "all checks" (which would include itself).
-on: pull_request_target # zizmor: ignore[dangerous-triggers] Dependabot metadata-only automerge; no PR code is checked out or executed.
-permissions:
-  contents: write
-  pull-requests: write
+# Runs on pull_request, not pull_request_target (blocked by default in public repos
+# from 2026-12-02). Gated on the PR author plus a same-repo head; no PR code is executed.
+on: pull_request
+permissions: {}
 jobs:
   automerge:
-    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
+    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: read
     runs-on: ubuntu-latest
     steps:
       - name: Dependabot metadata
