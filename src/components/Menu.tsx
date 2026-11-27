@@ -177,6 +177,10 @@ export function Menu(props: MenuProps) {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
+        // Title only: centre the logo and buttons over the 592px play field, not the
+        // full 800px canvas, so the logo never runs into the score panel. The calc is
+        // 208px beside the panel and 0 on phones, where the container is only 592px.
+        paddingRight: mode === 'title' ? 'max(0px, calc(100% - 592px))' : undefined,
         background: mode === 'title' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.68)',
         color: COLORS.text,
         fontFamily: UI_FONT,
