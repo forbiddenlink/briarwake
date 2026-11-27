@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://briarwake.vercel.app/sitemap.xml
