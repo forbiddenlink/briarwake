@@ -51,6 +51,13 @@ export class SidebarRenderer {
       g.font = 'italic 700 44px Georgia, serif'
       g.textAlign = 'center'
       g.textBaseline = 'top'
+      // Shrink the wordmark to fit the panel so the last letters are not
+      // clipped at the window edge (X profile leaves room for the X badge).
+      const logoMaxW = w * (classicProfile ? 0.92 : 0.8)
+      const logoW = g.measureText('Briarwake').width
+      if (logoW > logoMaxW) {
+        g.font = `italic 700 ${Math.floor((44 * logoMaxW) / logoW)}px Georgia, serif`
+      }
       const logoGrad = g.createLinearGradient(w * 0.18, 10, w * 0.82, 58)
       if (classicProfile) {
         logoGrad.addColorStop(0, '#70441a')
