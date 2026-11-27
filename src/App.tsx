@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { BriarwakeCanvas } from './components/BriarwakeCanvas'
 import { Menu, type OverlayName } from './components/Menu'
 import { Options } from './components/Options'
+import { PhoneHud } from './components/PhoneHud'
 import {
   AboutPanel,
   HowToPlayPanel,
@@ -19,31 +20,17 @@ import {
   saveScores,
 } from './game/HighScores'
 import { newRunStats } from './game/RunStats'
+import { computeLayout, FIELD_PX, GAME_H, GAME_W, HUD_H, type Layout, TITLE_BAR_H } from './layout'
 import { type GameSettings, loadSettings, saveSettings } from './settings'
-
-const GAME_W = 800
-const GAME_H = 592
-const TITLE_BAR_H = 22
-const FRAME_W = GAME_W + 2
-const FRAME_H = GAME_H + TITLE_BAR_H + 3
-const MARGIN = 12
-// Phones get a thin gutter so the frame uses nearly the full width.
-const MARGIN_SMALL = 6
 
 function isTestHarness(): boolean {
   return !!(window as unknown as { __BRIARWAKE_TEST__?: boolean }).__BRIARWAKE_TEST__
 }
 
-// Scale the whole window frame to fit the viewport. Fixed at 1 under the
-// headless harness so captures keep their size.
-function fitScale(): number {
-  if (isTestHarness()) return 1
-  const margin = window.innerWidth < 600 ? MARGIN_SMALL : MARGIN
-  const s = Math.min(
-    (window.innerWidth - margin * 2) / FRAME_W,
-    (window.innerHeight - margin * 2) / FRAME_H
-  )
-  return Math.max(0.3, Math.min(3, s))
+// Fixed at the desktop layout under the headless harness so captures keep their size.
+function currentLayout(): Layout {
+  if (isTestHarness()) return { ...computeLayout(1440, 900), scale: 1 }
+  return computeLayout(window.innerWidth, window.innerHeight)
 }
 
 const initialSnapshot: EngineSnapshot = {
@@ -61,7 +48,10 @@ export default function App() {
   const [overlay, setOverlay] = useState<OverlayName | null>(null)
   const [settings, setSettings] = useState<GameSettings>(loadSettings)
   const [scores, setScores] = useState<ScoreEntry[]>(loadScores)
-  const [scale, setScale] = useState(fitScale)
+  const [layout, setLayout] = useState(currentLayout)
+  const scale = layout.scale
+  const phone = layout.kind === 'portrait-phone'
+  const chrome = layout.kind === 'desktop'
   const [dpr, setDpr] = useState(() => window.devicePixelRatio || 1)
   const [newBest, setNewBest] = useState(false)
   const [shareNote, setShareNote] = useState('')
@@ -75,7 +65,7 @@ export default function App() {
 
   useEffect(() => {
     const onResize = () => {
-      setScale(fitScale())
+      setLayout(currentLayout())
       setDpr(window.devicePixelRatio || 1)
     }
     window.addEventListener('resize', onResize)
@@ -171,33 +161,23 @@ export default function App() {
 
   const profile = settings.gameMode === 'classic' ? 'classic' : 'x'
 
-  return (
+  const frame = (
     <div
       style={{
-        position: 'fixed',
-        inset: 0,
-        display: 'grid',
-        // The frame is a fixed 800px wide and shrunk with transform, which does
-        // not change layout size. An implicit auto column would grow to 800px
-        // and start at x=0, pushing the scaled frame off-screen on phones.
-        gridTemplateColumns: 'minmax(0, 1fr)',
-        gridTemplateRows: 'minmax(0, 1fr)',
-        placeItems: 'center',
-        overflow: 'hidden',
-        background: '#000',
+        width: phone ? FIELD_PX : GAME_W,
+        flex: '0 0 auto',
+        transform: `scale(${scale})`,
+        transformOrigin: phone ? 'top left' : 'center center',
+        ...(chrome
+          ? {
+              border: '1px solid #6a6a6a',
+              boxShadow: '0 14px 34px rgba(0,0,0,0.55)',
+              background: '#d0d0d0',
+            }
+          : { background: '#000' }),
       }}
     >
-      <div
-        style={{
-          width: GAME_W,
-          flex: '0 0 auto',
-          transform: `scale(${scale})`,
-          transformOrigin: 'center center',
-          border: '1px solid #6a6a6a',
-          boxShadow: '0 14px 34px rgba(0,0,0,0.55)',
-          background: '#d0d0d0',
-        }}
-      >
+      {chrome && (
         <div
           style={{
             height: TITLE_BAR_H,
@@ -236,49 +216,93 @@ export default function App() {
           </div>
           {profile === 'classic' ? 'Briarwake' : 'Enhanced'}
         </div>
+      )}
 
-        <div style={{ position: 'relative', width: GAME_W, height: GAME_H }}>
-          <BriarwakeCanvas
-            width={GAME_W}
-            height={GAME_H}
-            settings={settings}
-            pixelRatio={Math.min(4, dpr * scale)}
-            uiBlocked={overlay !== null}
-            onSnapshot={handleSnapshot}
-            onEngine={handleEngine}
+      <div
+        style={{
+          position: 'relative',
+          width: phone ? FIELD_PX : GAME_W,
+          height: GAME_H,
+          overflow: phone ? 'hidden' : undefined,
+        }}
+      >
+        <BriarwakeCanvas
+          width={GAME_W}
+          height={GAME_H}
+          settings={settings}
+          pixelRatio={Math.min(4, dpr * scale)}
+          uiBlocked={overlay !== null}
+          onSnapshot={handleSnapshot}
+          onEngine={handleEngine}
+        />
+
+        {game.mode !== 'playing' && overlay === null && (
+          <Menu
+            mode={game.mode}
+            visualProfile={profile}
+            score={game.score}
+            highScore={game.highScore}
+            level={game.level}
+            seed={game.seed}
+            daily={dailyRef.current}
+            cheated={game.cheated}
+            newBest={newBest}
+            stats={game.stats}
+            onStart={handleStart}
+            onStartDaily={handleStartDaily}
+            onResume={handleResume}
+            onQuit={handleQuit}
+            onOpen={setOverlay}
+            onShare={handleShare}
+            shareNote={shareNote}
           />
+        )}
 
-          {game.mode !== 'playing' && overlay === null && (
-            <Menu
-              mode={game.mode}
-              visualProfile={profile}
-              score={game.score}
-              highScore={game.highScore}
-              level={game.level}
-              seed={game.seed}
-              daily={dailyRef.current}
-              cheated={game.cheated}
-              newBest={newBest}
-              stats={game.stats}
-              onStart={handleStart}
-              onStartDaily={handleStartDaily}
-              onResume={handleResume}
-              onQuit={handleQuit}
-              onOpen={setOverlay}
-              onShare={handleShare}
-              shareNote={shareNote}
-            />
-          )}
-
-          {overlay === 'options' && (
-            <Options settings={settings} onChange={handleSettings} onClose={closeOverlay} />
-          )}
-          {overlay === 'howto' && <HowToPlayPanel profile={profile} onClose={closeOverlay} />}
-          {overlay === 'vermin' && <VerminPanel profile={profile} onClose={closeOverlay} />}
-          {overlay === 'scores' && <ScoresPanel scores={scores} onClose={closeOverlay} />}
-          {overlay === 'about' && <AboutPanel onClose={closeOverlay} />}
-        </div>
+        {overlay === 'options' && (
+          <Options settings={settings} onChange={handleSettings} onClose={closeOverlay} />
+        )}
+        {overlay === 'howto' && <HowToPlayPanel profile={profile} onClose={closeOverlay} />}
+        {overlay === 'vermin' && <VerminPanel profile={profile} onClose={closeOverlay} />}
+        {overlay === 'scores' && <ScoresPanel scores={scores} onClose={closeOverlay} />}
+        {overlay === 'about' && <AboutPanel onClose={closeOverlay} />}
       </div>
+    </div>
+  )
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        display: 'grid',
+        // The frame is a fixed 800px wide and shrunk with transform, which does
+        // not change layout size. An implicit auto column would grow to 800px
+        // and start at x=0, pushing the scaled frame off-screen on phones.
+        gridTemplateColumns: 'minmax(0, 1fr)',
+        gridTemplateRows: 'minmax(0, 1fr)',
+        placeItems: 'center',
+        overflow: 'hidden',
+        background: '#000',
+      }}
+    >
+      {phone ? (
+        <div style={{ width: layout.viewW }}>
+          <PhoneHud engineRef={engineRef} height={HUD_H} />
+          <div
+            data-testid="play-area"
+            style={{
+              width: layout.viewW,
+              height: layout.viewH,
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            {frame}
+          </div>
+        </div>
+      ) : (
+        frame
+      )}
     </div>
   )
 }
