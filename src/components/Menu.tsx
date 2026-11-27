@@ -23,6 +23,8 @@ interface MenuProps {
   onResume: () => void
   onQuit: () => void
   onOpen: (overlay: OverlayName) => void
+  onShare: () => void
+  shareNote: string
 }
 
 interface Item {
@@ -133,6 +135,14 @@ export function Menu(props: MenuProps) {
           ]
         : [
             { label: 'PLAY AGAIN', run: props.onStart },
+            ...(daily
+              ? [
+                  {
+                    label: props.shareNote ? `SHARE RESULT (${props.shareNote})` : 'SHARE RESULT',
+                    run: props.onShare,
+                  },
+                ]
+              : []),
             { label: 'HIGH SCORES', run: () => props.onOpen('scores') },
             { label: 'TITLE SCREEN', run: props.onQuit },
           ]

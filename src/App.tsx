@@ -8,6 +8,7 @@ import {
   ScoresPanel,
   VerminPanel,
 } from './components/panels/InfoPanels'
+import { buildShareText, dayUrl, resolveDay } from './game/Daily'
 import type { Engine, EngineSnapshot } from './game/Engine'
 import {
   dailySeed,
@@ -26,6 +27,8 @@ const TITLE_BAR_H = 22
 const FRAME_W = GAME_W + 2
 const FRAME_H = GAME_H + TITLE_BAR_H + 3
 const MARGIN = 12
+// Phones get a thin gutter so the frame uses nearly the full width.
+const MARGIN_SMALL = 6
 
 function isTestHarness(): boolean {
   return !!(window as unknown as { __BRIARWAKE_TEST__?: boolean }).__BRIARWAKE_TEST__
@@ -35,9 +38,10 @@ function isTestHarness(): boolean {
 // headless harness so captures keep their size.
 function fitScale(): number {
   if (isTestHarness()) return 1
+  const margin = window.innerWidth < 600 ? MARGIN_SMALL : MARGIN
   const s = Math.min(
-    (window.innerWidth - MARGIN * 2) / FRAME_W,
-    (window.innerHeight - MARGIN * 2) / FRAME_H
+    (window.innerWidth - margin * 2) / FRAME_W,
+    (window.innerHeight - margin * 2) / FRAME_H
   )
   return Math.max(0.3, Math.min(3, s))
 }
@@ -60,6 +64,9 @@ export default function App() {
   const [scale, setScale] = useState(fitScale)
   const [dpr, setDpr] = useState(() => window.devicePixelRatio || 1)
   const [newBest, setNewBest] = useState(false)
+  const [shareNote, setShareNote] = useState('')
+  // ?day=YYYY-MM-DD picks the challenge day; invalid or future days mean today.
+  const [challengeDay] = useState(() => resolveDay(window.location.search, new Date()))
   const engineRef = useRef<Engine | null>(null)
   const dailyRef = useRef(false)
   const bestBeforeRunRef = useRef(0)
@@ -108,11 +115,20 @@ export default function App() {
     })
   }, [game.mode, game.seed, game.score, game.level, game.cheated, settings.gameMode])
 
-  const start = useCallback((daily: boolean) => {
-    engineRef.current?.startNewGame(daily ? dailySeed(new Date()) : undefined)
-  }, [])
-  const handleStart = useCallback(() => start(false), [start])
-  const handleStartDaily = useCallback(() => start(true), [start])
+  const start = useCallback(
+    (daily: boolean) => {
+      engineRef.current?.startNewGame(daily ? dailySeed(challengeDay) : undefined)
+    },
+    [challengeDay]
+  )
+  const handleStart = useCallback(() => {
+    setShareNote('')
+    start(false)
+  }, [start])
+  const handleStartDaily = useCallback(() => {
+    setShareNote('')
+    start(true)
+  }, [start])
   const handleResume = useCallback(() => engineRef.current?.resume(), [])
   const handleQuit = useCallback(() => engineRef.current?.abortToTitle(), [])
   const closeOverlay = useCallback(() => setOverlay(null), [])
@@ -126,10 +142,32 @@ export default function App() {
     if (game.mode === 'playing' && (prev === 'title' || prev === 'gameover')) {
       bestBeforeRunRef.current = game.highScore
       recordedRunRef.current = null
-      dailyRef.current = game.seed === dailySeed(new Date())
+      dailyRef.current = game.seed === dailySeed(challengeDay)
       setNewBest(false)
     }
   }, [game.mode])
+
+  const handleShare = useCallback(async () => {
+    const text = buildShareText({
+      day: challengeDay,
+      score: game.score,
+      wave: game.level,
+      url: dayUrl(window.location.href, challengeDay),
+    })
+    try {
+      if (typeof navigator.share === 'function') {
+        await navigator.share({ title: 'Briarwake Daily', text })
+        setShareNote('SHARED')
+        return
+      }
+      await navigator.clipboard.writeText(text)
+      setShareNote('COPIED')
+    } catch (err) {
+      // Closing the share sheet rejects with AbortError: not a failure.
+      if (err instanceof DOMException && err.name === 'AbortError') return
+      setShareNote('FAILED')
+    }
+  }, [challengeDay, game.score, game.level])
 
   const profile = settings.gameMode === 'classic' ? 'classic' : 'x'
 
@@ -227,6 +265,8 @@ export default function App() {
               onResume={handleResume}
               onQuit={handleQuit}
               onOpen={setOverlay}
+              onShare={handleShare}
+              shareNote={shareNote}
             />
           )}
 
