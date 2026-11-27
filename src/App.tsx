@@ -139,6 +139,11 @@ export default function App() {
         position: 'fixed',
         inset: 0,
         display: 'grid',
+        // The frame is a fixed 800px wide and shrunk with transform, which does
+        // not change layout size. An implicit auto column would grow to 800px
+        // and start at x=0, pushing the scaled frame off-screen on phones.
+        gridTemplateColumns: 'minmax(0, 1fr)',
+        gridTemplateRows: 'minmax(0, 1fr)',
         placeItems: 'center',
         overflow: 'hidden',
         background: '#000',
