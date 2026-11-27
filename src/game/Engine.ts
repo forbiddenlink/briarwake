@@ -361,6 +361,17 @@ export class Engine {
     }
   }
 
+  // Numbers the DOM score strip shows on portrait phones, where the canvas side
+  // panel is cropped away.
+  hud() {
+    return {
+      score: this.score,
+      bonus: this.sidebarBonus,
+      lives: this.lives,
+      wave: this.displayWave(),
+    }
+  }
+
   // Backing-store scale. The game draws in 800x592 logical pixels; this keeps it
   // sharp on Retina displays and when the frame is scaled up to fit the window.
   setPixelRatio(ratio: number) {
