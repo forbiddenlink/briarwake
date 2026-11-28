@@ -23,3 +23,5 @@ tools/artifacts/
 # Generated agent scratch output. Churns on every run and is not source.
 .claude/cache/
 .claude/tsc-cache/
+
+.claude/settings.local.json
